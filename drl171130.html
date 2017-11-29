@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)</title>
+<meta name="author" content="(金川裕司(学際科学科3年))"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/theme/none.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="/usr/share/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)</h1><h2 class="author">金川裕司(学際科学科3年)</h2><p class="date">Created: 2017-11-29 水 23:22</p>
+</section>
+<section>
+<section id="slide-orged2b76f">
+<h2 id="orged2b76f"><span class="section-number-2">1</span> 概要</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/1701.07274">https://arxiv.org/abs/1701.07274</a> の1~3章の紹介</li>
+<li>スライドのURL: <a href="https://kngwyu.github.io/">https://kngwyu.github.io/</a></li>
+<li>参考にしたもの
+<ul>
+<li><a href="http://incompleteideas.net/sutton/book/the-book-2nd.html">Sutton&amp;Barto
+の有名な教科書(改訂版のドラフト)</a></li>
+<li><a href="http://rll.berkeley.edu/deeprlcourse/">UC Barkleyの講義資料</a></li>
+<li><a href="http://www.morikita.co.jp/books/book/3034">これからの強化学習</a>,
+<a href="http://bookclub.kodansha.co.jp/product?isbn=9784061538283">これならわかる深層学習入門</a></li>
+
+</ul></li>
+<li>重要なこと
+<ul>
+<li>価値関数を使用する方法(DQNとか)</li>
+<li>方策勾配を使用する方法(Actor Critic, A3Cとか)</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orge995c1f">
+<h2 id="orge995c1f"><span class="section-number-2">2</span> まえがき</h2>
+<ul>
+<li>深層強化学習の隆盛(AlphaGoとか)
+<ul>
+<li>強化学習やニューラルネット自体は昔からあった</li>
+<li>深層学習によるブレイクスルー</li>
+
+</ul></li>
+<li>背景、基礎理論、応用的な理論、実際の利用例等を概観する</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9f5fbd0">
+<h2 id="org9f5fbd0"><span class="section-number-2">3</span> 背景</h2>
+<p>
+機械学習、深層学習、強化学習
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd462113">
+<h3 id="orgd462113"><span class="section-number-3">3.1</span> 機械学習</h3>
+<div class="outline-text-3" id="text-3-1">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgb52364b">
+<h4 id="orgb52364b"><span class="section-number-4">3.1.1</span> 教師あり学習・教師なし学習</h4>
+<p>
+データから関数を学習する(<a href="./drl1.pdf">図</a>)
+</p>
+<ul>
+<li>教師あり学習(識別、予測、回帰)
+<ul>
+<li>回帰、k近傍法、決定木、&#x2026;</li>
+
+</ul></li>
+<li>教師なし学習(分類)
+<ul>
+<li>成分分解、混合分布、クラスタリング、&#x2026;</li>
+
+</ul></li>
+<li>目標(サンプルデータと関数近似器との二乗誤差を最小化する、等)を決めて、関数近似器を学習させる</li>
+<li>過学習を防ぐために目標の決め方を工夫(正則化)</li>
+<li>万能な汎化法はないので、モデル同士の優劣基準も必要
+<ul>
+<li>交差検証、情報量基準(汎化損失、周辺尤度等に対応するように設計した統計量)など</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbaadb46">
+<h3 id="orgbaadb46"><span class="section-number-3">3.2</span> 深層学習</h3>
+<ul>
+<li>関数近似器として多層パーセプトロンモデルを使用した教師つき・教師なし
+学習の手法</li>
+<li>詳細は割愛します</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org0cbec3c">
+<h3 id="org0cbec3c"><span class="section-number-3">3.3</span> 強化学習</h3>
+<p>
+よくわからない状況で、様子を見ながら行動する
+<img src="./drl2.png" alt="drl2.png" />
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org66c6966">
+<h4 id="org66c6966"><span class="section-number-4">3.3.1</span> 定式化と用語</h4>
+<ul>
+<li>エージェント(Agent): 行動主体</li>
+<li>エピソード(Episode): 一連の動作(囲碁一試合ぶん等)</li>
+
+</ul>
+<p>
+エピソード内でのあるタイム・ステップ \(t \leq T\) において
+</p>
+<ul>
+<li>状態(State) \(s_t \in \mathcal S\) 、行動(Action) \(a_t \in \mathcal A(s_t)\)</li>
+<li>環境により、各タイム・ステップごとに与えられるもの
+<ul>
+<li>報酬(Reward) \(R_t \in \mathcal R\)</li>
+<li>\(t \rightarrow t+1\) になった瞬間に \(R _{t+1}\) がもらえる</li>
+
+</ul></li>
+<li>環境により決まっているもの
+<ul>
+<li>遷移確率関数(Transition Probability) \(P(s_{t+1}|s_t, a_t)\)</li>
+<li>たいていの場合、エージェントはこれを知らない</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-orga293979">
+<h5 id="orga293979"><span class="section-number-5">3.3.1.1</span> 定式化と用語 その2</h5>
+<ul>
+<li>エージェントに学習させるもの
+<ul>
+<li>方策(Policy) \(\pi_t(a_t, s_t)\)</li>
+
+</ul></li>
+<li>エージェントを学習させるために設定したもの
+<ul>
+<li>収益(Goal)
+<ul>
+<li>ある状態の価値を表すための指標</li>
+<li>状態 \(s\) から先で( \(s\) に遷移したことが原因で)得られる報酬</li>
+<li>近いRewardほど高く評価する割引報酬和\[G_t = \sum _{\tau =
+      0}^\infty \gamma^ \tau R_{t + 1 + \tau} = R_{t +1} + \gamma R_{t +
+      2} + \gamma ^2 R_{t + 3}... \] \((0 < \gamma < 1)\) がよく使われる
+<ul>
+<li>\(R_t\) を含まないことに注意</li>
+<li>本によっては利得 \(R_t\) と呼んでいることもある</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb8b19ef">
+<h4 id="orgb8b19ef"><span class="section-number-4">3.3.2</span> 価値関数</h4>
+<p>
+最適な方策の基準として、状態と行動に価値を設定する。
+</p>
+<ul>
+<li>状態価値関数(State Value Function)
+<ul>
+<li>ある方策 \(\pi\) をとっているときのある状態 \(s\) の状態価値を\[V_\pi(s)=\mathbb E _\pi [G_{t}| S_t= s]\] とする</li>
+<li>( \(\mathbb E _\pi\) は方策 \(\pi\) のもとでの期待値を表す)</li>
+
+</ul></li>
+<li>行動価値関数(Action Value Function)
+<ul>
+<li>同様に、ある状態 \(s\) と行動 \(a\) の行動価値を \[Q_\pi (s,a) =
+    \mathbb E _\pi [G_t | S_t = s, A_t = a]\] とする。</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgb0ff53f">
+<h5 id="orgb0ff53f"><span class="section-number-5">3.3.2.1</span> 相互作用の最も単純なモデル化: マルコフ決定過程(MDP)</h5>
+<p>
+Rewardが、1つ前のタイム・ステップの状態・行動のみに依存し、2つ以上前に
+は依存しないとすると、報酬関数rは \[R_{t + 1} = r(S_t, A_t, S_{t+1})\] と書け
+る。以後、特別なことわりをいれない限りこのような場合だけ考察する。
+</p>
+<ul>
+<li>これでうまくいかない場合は部分観測マルコフ決定過程(POMDP)などを使う</li>
+<li>マルコフ性を仮定しないとベルマン方程式は導出できないので、この論文の構成はおかしい
+<ul>
+<li>\(p (s', r|s, a)\) はマルコフ性を仮定している</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orge1d8ed8">
+<h5 id="orge1d8ed8"><span class="section-number-5">3.3.2.2</span> ベルマン方程式 その1</h5>
+<ul>
+<li>遷移確率関数と報酬関数がわかれば、探索しなくても価値関数がわかる</li>
+
+</ul>
+<p>
+報酬の期待値を、線形性を使って分解して
+</p>
+<div>
+\begin{aligned}
+\small V_\pi(s) &\small =\mathbb E _\pi [G_{t}| S_t= s] \\
+&\small = \mathbb E_\pi[R_{t+1} | S_t = s] + \mathbb E _\pi[\gamma R _{t+2} + \gamma^2 R _{t+3} + ... | S_t = s] \\
+&\small = \mathbb E_\pi[R_{t+1} | S_t = s] + \gamma \mathbb E _\pi[R _{t+2} + \gamma R _{t+3} + ...| S_t= s] \\
+&\small = \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) r(s, a, s') \\
+&\scriptsize + \gamma   \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal
+S} P(s'|s, a) \mathbb E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] \\
+\end{aligned}
+
+</div>
+</section>
+<section id="slide-org551ee45">
+<h5 id="org551ee45"><span class="section-number-5">3.3.2.3</span> ベルマン方程式 その2</h5>
+<p>
+ここで、\(\small E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] =
+V_\pi(s')\) だから、
+\[
+\small \therefore V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V_\pi(s') \bigr)
+\]
+価値関数に関する連立方程式ができた。行動価値も同様。
+</p>
+<div>
+\begin{aligned}
+\small Q_\pi (s, a)  \small =& \small \sum _{s' \in \mathcal S} P (s'|s, a)\bigl( r(s, a, s') + \gamma V_\pi(s')\bigr) \\
+& \small  ※ V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) Q_\pi (s, a) だから \\
+\small =& \small \sum _{s' \in S, r \in \mathcal R}  P (s'|s, a) \bigl( r(s, a, s') + \sum _{a' \in \mathcal A(s')} \pi (a'|s') Q_\pi (s', a') \bigr)
+\end{aligned}
+
+</div>
+
+</section>
+<section id="slide-orgd047c4f">
+<h5 id="orgd047c4f"><span class="section-number-5">3.3.2.4</span> ベルマン最適方程式</h5>
+<div>
+\begin{aligned}
+\small V_* (s) & \small = \max _\pi V_\pi(s) ~~ \forall s \in \mathcal S \\
+&\small = \max _{a \in \mathcal A} \sum _{s' \in \mathcal S} p (s'|s, a) \bigl( r(s, a, s') + \gamma V_{*}(s') \bigr) \forall s \in \mathcal S \\
+\small Q_* (s, a) & \small = \max _\pi Q_\pi (s, a) ~~ \forall s \in \mathcal S, \forall a \in \mathcal A \\
+&\small = \sum _{s' \in \mathcal S} P (s'|s, a)\bigl( r(s, a, s') + \gamma \max _{a' \in \mathcal A} Q_* (s, a)\bigr) \forall s, a
+\end{aligned}
+
+</div>
+<p>
+なる価値関数を最適価値関数と呼ぶ。
+</p>
+<ul>
+<li>\(V_*\) は最適方策 \(\pi_*\) (価値が最大となる行動を常に選択)での価値関
+数を与える</li>
+<li>\(Q_*\) のもとでの貪欲方策は最適方策になる</li>
+
+</ul>
+
+</section>
+<section id="slide-org432fb4b">
+<h5 id="org432fb4b"><span class="section-number-5">3.3.2.5</span> ベルマン方程式の解法 その1</h5>
+<ul>
+<li>ベルマン方程式やベルマン最適方程式は解けるの？
+<ul>
+<li>特に、最適のほうはmaxをとっているところが自分も含んでいるから、難しそう</li>
+<li>(補足)このような方程式を自己無撞着方程式と呼ぶ</li>
+
+</ul></li>
+
+</ul>
+<p>
+以下の更新(そのまま代入するだけ)を収束するまで反復することで、ベルマン
+方程式 \(V_\pi(s)\) が解ける。
+</p>
+<div>
+\begin{aligned}
+V'_\pi(s)\xleftarrow[update]{}  \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V'_\pi(s') \bigr)
+\end{aligned}
+
+</div>
+</section>
+<section id="slide-org18fa876">
+<h5 id="org18fa876"><span class="section-number-5">3.3.2.6</span> ベルマン方程式の解法 その2</h5>
+<ul>
+<li>\(Q, V _* , Q _*\) についても同様に解ける</li>
+<li>更新を作用素 \(B\) でおく( \(V'_(s) \leftarrow B^\pi V\) )と \(B^\pi\) が \(V(s)\) の上
+限ノルムに対する縮小写像になることから収束が示せる(らしい)</li>
+<li></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb310051">
+<h4 id="orgb310051"><span class="section-number-4">3.3.3</span> 価値反復アルゴリズム</h4>
+<ul>
+<li>マルコフ性を仮定した上で、遷移確率\(P(s_{t+1}|s_t, a_t)\) および報酬関
+数 \(r(S_t, A_t, S_{t+1})\) がわかれば、ベルマン最適方程式により最適方
+策がわかる</li>
+<li>が、わからないことの方が多そう</li>
+<li>なので、探索しながら最適方策を探す方法を考えよう</li>
+
+</ul>
+</section>
+<section id="slide-orgb164390">
+<h5 id="orgb164390"><span class="section-number-5">3.3.3.1</span> モンテカルロ法</h5>
+<p>
+適当な方策で行動し、1エピソードぶん終わったあと
+</p>
+<div>
+\begin{aligned}
+V _{aftter}(s) &= V _{before} (s) + \eta \bigl( G(t) - V_i (s) \bigr) \\
+&=  (1 - \eta) V _{before} (s) + \eta G(t) ~~~\forall s \in \mathcal S
+\end{aligned}
+
+</div>
+<p>
+で価値関数を更新する
+</p>
+<ul>
+<li>価値関数の推定値のうち \(\eta\) 割 だけ、得られた収益でおきかえている</li>
+<li>いずれ標本平均に収束する</li>
+<li>収束は遅いが、仮定が少ないので頑健</li>
+
+</ul>
+</section>
+<section id="slide-org64d8e19">
+<h5 id="org64d8e19"><span class="section-number-5">3.3.3.2</span> TD誤差学習 その1</h5>
+<ul>
+<li>マルコフ性を使おう!</li>
+<li>ベルマン方程式の逐次代入解法では以下のように解いた</li>
+
+</ul>
+<p>
+\[
+V'(s) = B_\pi V = \mathbb E [R_{t+1} + \gamma V(s _{t + 1}) | s_t = s]
+\]
+</p>
+<ul>
+<li>期待値 \(\mathbb E\) をサンプリング報酬 \(R _{t+1}\) および現在の推定値
+\(V(s _{t+1})\) を使って近似する</li>
+<li>ある方策のもとでサンプル \((s_t, s_{t+1}, R_{t+1})\) を得たとき</li>
+
+</ul>
+<p>
+\[
+\hat B_\pi V = r_{t + 1} + \gamma V (s_t + 1)
+\]
+で更新する。
+</p>
+</section>
+<section id="slide-org668c9df">
+<h5 id="org668c9df"><span class="section-number-5">3.3.3.3</span> TD誤差学習 その2</h5>
+<p>
+\(s_{t + 1}\) に関し期待値をとると
+\[
+\mathbb E _\pi[\hat B_\pi V(s_t)|s_t] = E_\pi [r_{t+1} + \gamma
+V(s_{t+1})|s_t] = B_\pi V
+\]
+</p>
+<ul>
+<li>期待値が逐次代入解に一致したので、うまくいきそう</li>
+<li>サンプルのばらつき(方策によるばらつき、報酬自体のばらつき)を考慮し、
+学習率 \(\alpha_t\) を導入して少しずつ学習する</li>
+
+</ul>
+<div>
+\begin{aligned}
+V(s_t) \xleftarrow[update]{} & (1- \alpha_t)V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1})\bigr) \\
+=&V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1}) - V(s_t) \bigr) 
+\end{aligned}
+
+</div>
+<ul>
+<li>\(R_t + \gamma V(s_{t + 1}) - V(s_t)\) をTD誤差(TD error)と呼ぶ</li>
+<li>学習係数を適切に減衰させればこれは収束する</li>
+
+</ul>
+
+</section>
+<section id="slide-org7042951">
+<h5 id="org7042951"><span class="section-number-5">3.3.3.4</span> SARSA</h5>
+<ul>
+<li>TD誤差学習と同じことを \(Q(s, a)\) についてやる</li>
+<li>更新式は</li>
+
+</ul>
+<p>
+\[
+\small Q(s_t, a_t)\xleftarrow[update]{} Q(s_t, a_t) + \alpha_t \bigl( R_{t+1} +
+\gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \bigr)
+\]
+</p>
+
+</section>
+<section id="slide-org8c7c7de">
+<h5 id="org8c7c7de"><span class="section-number-5">3.3.3.5</span> 方策オン型、方策オフ型 その1</h5>
+<ul>
+<li>モンテカルロ法、TD誤差学習、SARSAは、いずれ「方策を固定した時の価値関数」に収束する</li>
+<li>最適方策を決めるには、最適価値関数が必要</li>
+<li>後述する仮定をおくと、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる</li>
+
+</ul>
+<p>
+\[
+\pi_i \xrightarrow[\pi _iで行動し価値関数を更新]{} Q_i \xrightarrow[Q_i に
+基づく貪欲方策]{} \pi _{i+1} ...
+\]
+</p>
+</section>
+<section id="slide-org097ef23">
+<h5 id="org097ef23"><span class="section-number-5">3.3.3.6</span> 方策オン型、方策オフ型 その2</h5>
+<ul>
+<li>ただし、これだと全ての状態 \(\mathcal S\) に到達しない場合があるので、
+ヒューリスティクスを使う</li>
+<li>代表的なのは \(\epsilon -\rm greedy\) (確率 \(\epsilon\) で乱択、 \(1-\epsilon\) で貪欲)</li>
+<li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
+ぶ</li>
+<li>逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ</li>
+<li>TD誤差学習、SARSAは方策オン型</li>
+<li>モンテカルロ法はImportance Sampling等を使うと方策オフ型にできる(説明
+略)</li>
+<li>基本的には方策オフ型の方がいい(効率がいいから)</li>
+
+</ul>
+
+</section>
+<section id="slide-orgaaaef7d">
+<h5 id="orgaaaef7d"><span class="section-number-5">3.3.3.7</span> Q学習</h5>
+<ul>
+<li>TD誤差学習 と同じことを \(Q_*(s, a)\) についてやる</li>
+<li>逐次代入法とサンプリング版の更新式は</li>
+
+</ul>
+<div>
+\begin{aligned}
+\small Q'(s, a) = B_*Q &= \mathbb E_P [R_{t + 1} + \gamma \max
+_{a_{t+1}} Q(s_{t+1}, a_{t+1})|s_t=s, a_t=a] \\
+\small \hat B_* Q(s_t, a_t) &= R_{t+1} + \gamma \max_{a_{t+1}}
+Q(s_{t+1}, a_{t+1})
+\end{aligned}
+
+</div>
+<ul>
+<li>学習係数を導入して</li>
+
+</ul>
+<p>
+\[
+\small Q(s, a)  \xleftarrow[update]{} Q(s, a) + \alpha_t \bigl( R_{t+1} +
+\max_{a_{t+1}} \gamma Q(s_{t+1}, a_{t+1}) - Q(s, a) \bigr)
+\]
+</p>
+
+</section>
+<section id="slide-orgccae490">
+<h5 id="orgccae490"><span class="section-number-5">3.3.3.8</span> まとめ</h5>
+<ul>
+<li>探索しながら価値関数を求めたい</li>
+<li>マルコフ性を使えるならベルマン方程式をサンプリングによって近似的に解
+くのが良さそうだし、実験的にも割とうまくいく</li>
+<li>TD誤差学習
+<ul>
+<li>\(V_\pi(s)\) の計算に対応</li>
+
+</ul></li>
+<li>SARSA
+<ul>
+<li>\(Q_\pi(s, a)\) の計算に対応</li>
+
+</ul></li>
+<li>Q学習
+<ul>
+<li>\(Q_*(s, a)\) の計算に対応</li>
+
+</ul></li>
+<li>\(V_*(s, a)\) は？
+<ul>
+<li>無理</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgba7e171">
+<h4 id="orgba7e171"><span class="section-number-4">3.3.4</span> Multi-Step Bootstrapping</h4>
+<ul>
+<li>TD誤差学習では、タイムステップ一回ぶんのサンプルで学習していた</li>
+
+</ul>
+<p>
+\[
+V_{t+1}(s_t) \leftarrow  V_t(s_t) + \alpha_t \bigl(R_{t+1} + \gamma
+V_t(s_{t + 1}) - V_t(s_t) \bigr)
+\]
+</p>
+<ul>
+<li>サンプルをたくさん使うようにしたら収束が早くなるかも</li>
+<li>\(n\) ステップ版TD誤差学習の更新関数は以下のようになる</li>
+
+</ul>
+<p>
+\[
+\scriptsize V_{t+ n}(s_t) \leftarrow  V_{t+n-1}(s_t) + \alpha_t
+\bigl(\sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n
+V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
+\]
+</p>
+<ul>
+<li>Q学習やSARSAでも同様にできる</li>
+
+</ul>
+
+</section>
+<section id="slide-orgcedeece">
+<h5 id="orgcedeece"><span class="section-number-5">3.3.4.1</span> 適格度トレーシング</h5>
+<ul>
+<li>よくわからなかった</li>
+<li>\(\frac{n}{T}=\lambda\) なる \(\lambda\) を用いて、マルチステップ版のこ
+とをTD(&lambda;) と呼ぶらしい(多分)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4971832">
+<h4 id="org4971832"><span class="section-number-4">3.3.5</span> (価値関数法に対する)関数近似法</h4>
+<ul>
+<li>今までの方法はテーブル表現されたものだった
+<ul>
+<li>状態、行動が多いとメモリにのらない</li>
+
+</ul></li>
+<li>もっと軽い方法はないだろうか
+<ul>
+<li>パラメトリックな方法を使おう</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org2ed9ee0">
+<h5 id="org2ed9ee0"><span class="section-number-5">3.3.5.1</span> 直接法 TD誤差学習</h5>
+<ul>
+<li>テーブル表現された状態価値関数 \(V(s) \forall s \in \mathcal S\) を関
+数\(\hat V (s|\theta)\) で近似し、次のように更新する</li>
+
+</ul>
+<div>
+\begin{aligned}
+\theta_{t+1} &= \theta{t}+ \alpha_t \Delta \theta_t \\
+\Delta \theta_t &:= \epsilon_{t+1} \partial_\theta \hat V_\pi (s_t |\theta_t) \\
+\epsilon_{t+1} &:= R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) (TD誤差)
+\end{aligned}
+
+</div>
+<ul>
+<li>これは、関数 \(\hat V_\pi(s|\theta)\) が以下のような線形関数で書けると
+き、収束が保証される</li>
+
+</ul>
+<p>
+\[
+\hat V (s|\theta) = \theta^T \phi(s)
+\]
+</p>
+
+</section>
+<section id="slide-orge03dc3d">
+<h5 id="orge03dc3d"><span class="section-number-5">3.3.5.2</span> 直接法 その他</h5>
+<ul>
+<li>一方、非線形な関数近似器の場合は方策オン型にしないと収束が保証されな
+い</li>
+<li>同様に、TD(&lambda;) やSARSA、Q学習も関数近似バージョンにできる</li>
+<li>例えば、Q学習は以下のように書ける</li>
+
+</ul>
+<div>
+\begin{aligned}
+\theta_{t+1} &= \theta{t}+ \alpha_t \Delta \theta_t \\
+\Delta \theta_t &:= \epsilon _{t+1}^* \partial_\theta \hat Q (s_t |\theta_t) \\
+\epsilon_{t+1}^* &:= R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1} | \theta_t) - \hat Q (s_t |\theta_t)
+\end{aligned}
+
+</div>
+<ul>
+<li>表を利用する方法をそのまま関数近似にしたので、直接法と呼ぶ</li>
+
+</ul>
+
+</section>
+<section id="slide-org1f30578">
+<h5 id="org1f30578"><span class="section-number-5">3.3.5.3</span> 勾配TD法</h5>
+<p>
+関数近似によるTD法の停留点は
+\[
+\mathbb E_\mu [\mathbb E_\pi[\epsilon_{t+1}|s_t] \partial_\theta \hat
+V_\pi(s_t|\theta)] = 0
+\]
+</p>
+<ul>
+<li>これを停留点に持つ目的関数を以下のように定める</li>
+
+</ul>
+<p>
+\[
+J(\theta) = \biggl( \mathbb E_\mu [\mathbb E_\pi[\epsilon_{t+1}|s_t] \partial_\theta \hat
+V_\pi(s_t|\theta)]\biggr) ^2
+\]
+</p>
+<ul>
+<li>これを確率勾配法によって最小化する(詳細は略)</li>
+
+</ul>
+</section>
+<section id="slide-org5ba3390">
+<h5 id="org5ba3390"><span class="section-number-5">3.3.5.4</span> 最小二乗TD誤差法 (LSTD) その1</h5>
+<ul>
+<li>TD誤差二乗を最小化するのはどうか？
+<ul>
+<li>目的関数は \(\small\mathbb E_\mu[\mathbb E_\pi[ \epsilon _{t+1}|s_t]^2]\)</li>
+<li>ベルマン誤差: TD誤差の状態遷移確率(方策のぶんも含む)に関する期待値の二乗</li>
+
+</ul></li>
+<li>TD誤差二乗の最小化</li>
+
+</ul>
+<div>
+\begin{aligned}
+J_{TD}(\theta) &= \mathbb E \mu[\mathbb E_\pi[\epsilon _{t+1}^2|s_t]] \\
+&= \mathbb E \mu[\mathbb E_\pi[R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) |s_t]^2] \\
+&\approx \frac{1}{T} \sum_{t=0}^{T-1} \biggl(R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) \biggr)^2
+\end{aligned}
+
+</div>
+</section>
+<section id="slide-orgcab7773">
+<h5 id="orgcab7773"><span class="section-number-5">3.3.5.5</span> LSTD その2</h5>
+<p>
+\(\hat V_\pi (s_t |\theta_t) = \theta^T \phi_t\) とおくと
+\[
+\therefore J_{TD}(\theta) \approx  \frac{1}{T} \sum_{t=0}^{T-1}
+\biggl(R_{t+1} - \theta^T (\phi_t - \gamma\phi_{t+1})\biggr)^2
+\]
+</p>
+<ul>
+<li>報酬を行動に関連性がある(= ノイズと入力に相関がある)のでこれはバイア
+スがかかった値になるから、「入力と相関するが出力ノイズと相関しない変
+数」 \(\mathcal W\) を使って目的関数を書きかえる(操作変数法)</li>
+
+</ul>
+</section>
+<section id="slide-org62bb14b">
+<h5 id="org62bb14b"><span class="section-number-5">3.3.5.6</span> LSTD その3</h5>
+<ul>
+<li>\(w_t\) として \(\phi_t\) を用いると</li>
+
+</ul>
+<p>
+\[
+\small \theta_{IV} = \biggl( \frac{1}{t} \sum_{k=0}{t-1} \phi_k(\phi_k -
+\gamma \phi_{k+1})^T)^{-1} \biggr) \biggl( \frac{1}{t} \sum_{k=0}{t-1}
+\phi_k R_{k+1} \biggr)
+\]
+これがLSTD法の目的関数になる
+</p>
+
+</section>
+<section id="slide-orge9002b4">
+<h5 id="orge9002b4"><span class="section-number-5">3.3.5.7</span> GTD2, TDC その1</h5>
+<p>
+LSTD法は以下の別のコスト関数を近似的に最小化していると解釈できる
+</p>
+<div>
+\begin{aligned}
+\theta _{IV}^* &= \rm {arg} \min_\theta C _{PB} (\theta) \\
+C_{PB} (\theta) &= \mathbb E _\mu [(\hat V_\pi (s_t|\theta) - \Pi B_\pi \hat V_\pi (s_t|\theta))^2]
+\end{aligned}
+
+</div>
+<p>
+ただし、
+</p>
+<div>
+\begin{aligned}
+\Pi V(s_t) &= \hat V(s_t|\tilde{\theta}) \\
+\tilde{\theta} &= \rm arg \min_\theta \mathbb E_\mu [(V(s_t) - \hat V(s_t | \theta))^2]
+\end{aligned}
+
+</div>
+<p>
+この \(C_{PB}\) は射影ベルマン残差の二乗になっている
+</p>
+</section>
+<section id="slide-org496b7af">
+<h5 id="org496b7af"><span class="section-number-5">3.3.5.8</span> GTD2, TDC その2</h5>
+<ul>
+<li>この \(C_PB\) を目的関数 \(J\) とすると</li>
+
+</ul>
+<p>
+\[
+J_{PB}(\theta) = \mathbb E[\epsilon _{t+1}\phi_t]^T \mathbb E[\phi_t \phi_t ^T]^{-1} \mathbb E[\epsilon _{t+1}\phi_t]
+\]
+</p>
+<ul>
+<li>このパラメータ勾配は、\(w := \mathbb E[\phi_t \phi_t ^T]^{-1} \mathbb E[\epsilon _{t+1}\phi_t]\) とおくと、以下のように書ける</li>
+
+</ul>
+<div>
+\begin{aligned}
+\frac{\partial J _{PB}(\theta)}{ \partial \theta} &= -2 \mathbb E[(\phi_t - \gamma\phi _{t+1})\phi _t ^T] w \\
+&= -2 \mathbb E[\epsilon _{t+1}\phi_t] + 2 \gamma \mathbb E[\phi _{t+1} \phi_t^T]w \\
+\end{aligned}
+
+</div>
+
+</section>
+<section id="slide-org048f014">
+<h5 id="org048f014"><span class="section-number-5">3.3.5.9</span> GTD2, TDC その3</h5>
+<ul>
+<li>\(w\) は以下の二乗誤差を最小化する解として解釈できる</li>
+
+</ul>
+<p>
+\[
+J_w (w) = \mathbb E [(\phi_t ^T - \epsilon_{t+1})^2]
+\]
+\[
+w _{t+1} = w_t - \beta _t \phi_t (\phi_t ^T w_t - \epsilon _{t+1}) (\therefore 最急勾配法から)
+\]
+これとさっきの式を最急勾配した
+\[
+\theta _{t+1} = \theta_t + \alpha_t (\phi_t - \gamma\phi _{t+1}) \phi_t^T w_t
+\]
+または
+\[
+\theta _{t+1} = \theta_t + \alpha_t (\epsilon _{t+1} \phi_t - \gamma \phi_t^T w_t)\phi _{t+1}
+\]
+とあわせて \(\theta\) , \(\beta\) の更新式を得る(前者がGTD2, 後者がTDC)
+</p>
+<ul>
+<li>計算が軽くなった</li>
+
+</ul>
+
+</section>
+<section id="slide-org9d6d3c3">
+<h5 id="org9d6d3c3"><span class="section-number-5">3.3.5.10</span> LSPE その1</h5>
+<p>
+\(J_{PB}\) の min を目的関数にする
+\[
+\min_\theta J_{PB}(\theta) = \min _\theta \mathbb E _\mu [(\hat V _\pi (s_t | \theta) - \Pi B_\pi \hat V_\pi (s_t|\theta))^2] \\
+\Pi B_\pi \hat V_\pi (s_t|\theta) = \rm{ arg} \min _{\hat V
+(s_t|\theta')} \mathbb E _\mu [(\hat V (s_t|\theta') - B_\pi \hat V_\pi (s_t|\theta))^2]
+\]
+パラメータ \(w\) を持つ線形関数近似器 \(\phi _t ^T w\) を導入すると、
+\[
+\min_\theta J_{PB}(\theta) = \min _\theta \mathbb E _\mu [(\phi_t^T
+\theta - \phi_t^T w)^2] \\
+\phi_t^T w = \rm arg \min _{\phi_t^T w'} \mathbb E _\mu [(\phi_t^T
+w' - B_\pi (\phi_t^T\theta))^2]
+\]
+</p>
+</section>
+<section id="slide-orgd60d352">
+<h5 id="orgd60d352"><span class="section-number-5">3.3.5.11</span> LSPE その2</h5>
+<p>
+\(\theta\) を逐次代入で、 \(w\)
+をバッチ型で解析的に解くと、以下の更新式が得られる
+\[
+\theta _{t+1} = \theta _t + \alpha_t (w_t - \theta_t) \\
+w _{t+1} = - \mathbb E [\phi _t \phi_t^T]^{-1} (A _{TD} \theta _{t+1} - b_{TD})
+\]
+</p>
+<ul>
+<li>Aはアドバンテージ関数(後述)</li>
+
+</ul>
+
+</section>
+<section id="slide-org9a88d7f">
+<h5 id="org9a88d7f"><span class="section-number-5">3.3.5.12</span> LSPI, GQ</h5>
+<ul>
+<li>LSTD, GTDと同じ操作を Qについてやる</li>
+<li>略</li>
+
+</ul>
+
+</section>
+<section id="slide-org35f18b1">
+<h5 id="org35f18b1"><span class="section-number-5">3.3.5.13</span> fitted Q その1</h5>
+<ul>
+<li>LSPEと同じ操作を Qについてやる まず目的関数は以下のようになる</li>
+
+</ul>
+<div>
+\begin{aligned}
+\min_\theta J_Q(\theta) &= \min_\theta \mathbb E_\mu [(\hat Q(s_t, a_t|\theta) - B_* \hat Q (s_t, a_t|\theta))^2]\\
+B_* \hat Q (s_t, a_t|\theta) &= \mathbb E _P [R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1}|\theta)|s_t, a_t]
+\end{aligned}
+
+</div>
+<ul>
+<li>これを \(\theta\) について解くのは容易でないので、 \(w(s_t, a_t) = B_*
+  \hat Q (s_t, a_t|\theta))\) を導入して以下のように分割し教師つき学習の
+問題にする</li>
+
+</ul>
+<p>
+\[
+\theta _{k+1} = \rm{ arg} \min _\theta \mathbb E _\mu [(\hat Q(s_t,
+a_t | \theta) - w(s_t, a_t))^2] \\
+w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
+(s_{t+1}, a_{t+1} | \theta_k) | s_t, a_t]
+\]
+</p>
+
+</section>
+<section id="slide-org93a23bc">
+<h5 id="org93a23bc"><span class="section-number-5">3.3.5.14</span> fitted Q その2</h5>
+<ul>
+<li>\(w\) が教師出力、\(\hat Q(s_t, a_t | \theta)\) が教師出力を近似するパラ
+メータ \(\theta\) を持つ 入力 \((s_t, a_t)\) の関数近似器</li>
+<li>期待値を適当な方策にしたがって得られたサンプル平均でおきかえてこれを
+解く</li>
+<li>関数近似器にニューラルネットを使ったものは neural fitted Q と呼ばれ
+る</li>
+<li>収束の保証はLSTD等と比べてかなり厳しい(収束が保証されるケースは少な
+い)が、Atari 2600 での Deep Q Networkなどこれを使ってうまくいったケー
+スもある</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0fb0b3d">
+<h4 id="org0fb0b3d"><span class="section-number-4">3.3.6</span> 方策勾配法</h4>
+<ul>
+<li>主に、行動が連続値である場合(制御とか)に用いられる手法</li>
+<li>行動価値関数を使用せず、直接方策を求める</li>
+<li>方策を何らかの確率モデルで表現し、勾配を使って最適化</li>
+<li>方策の表現例(ガウスモデル)(Cは共分散行列)</li>
+
+</ul>
+<p>
+\[
+\pi_\theta (a|s) = \frac{1}{2\pi^(d_a / 2) |C|^{1/2}} exp \biggl( 
+-\frac{1}{2}(a - W s)^T C^{-1} (a - Ws)
+\biggr)
+\]
+</p>
+
+</section>
+<section id="slide-orgab28e34">
+<h5 id="orgab28e34"><span class="section-number-5">3.3.6.1</span> 方策 \(\pi _\theta\) の更新</h5>
+<p>
+\[
+\theta^{t+1} = \theta^t + \eta \nabla_\theta J(\theta)
+\]
+</p>
+<ul>
+<li>&eta; は学習率</li>
+<li>方策勾配定理により、勾配は行動価値関数 \(Q(s, a)\) を使って以下のよう
+に書ける(証明略)</li>
+
+</ul>
+<div>
+\begin{aligned}
+ \nabla_\theta J(\theta) &= [ \frac{\partial J(\theta)}{\partial \theta_1},..., \frac{\partial J(\theta)}{\partial \theta_d} ] ^T \\
+&= \mathbb E _\pi\theta [\frac{\partial \pi_\theta (a|s)}{\partial \theta} \frac{1}{\pi_\theta (a|s)} Q^\pi (s, a)] \\
+&= \mathbb E _\pi\theta [\nabla _\theta \log  \pi_\theta (a|s) Q_\pi (s, a)]
+\end{aligned}
+
+</div>
+
+</section>
+<section id="slide-orgf4c1bb5">
+<h5 id="orgf4c1bb5"><span class="section-number-5">3.3.6.2</span> REINFORCEMENT</h5>
+<ul>
+<li>この式をサンプルを使って近似する</li>
+
+</ul>
+<p>
+\[
+ \nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  Q_\pi (s_t^m,a_t^m)
+\]
+</p>
+<ul>
+<li>\(s_t^m\) はmエピソード目でtステップ目の状態 aも同様</li>
+<li>この式の \(Q_\pi(s_t, a_t)\) を即時報酬 \(R_t\) で近似したのが
+(ベースラインを使わない)REINFORCEMENTで、</li>
+
+</ul>
+<p>
+\[
+\nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  R_t^m
+\]
+のようになる
+</p>
+
+</section>
+<section id="slide-org408a3b5">
+<h5 id="org408a3b5"><span class="section-number-5">3.3.6.3</span> REINFORCEMRNT wirh Baseline</h5>
+<ul>
+<li>行動に依存しないベースライン \(b\) を
+勾配の期待値の式にいれても、期待値は変わらない</li>
+
+</ul>
+<div>
+\begin{aligned}
+\nabla_\theta J(\theta) &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) Q_\pi (s, a)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(Q_\pi (s, a) - b_\pi(s)\bigr)] \\
+\end{aligned}
+
+</div>
+<ul>
+<li>\(b\) を平均報酬 \(\overline b\) 等として、さっきの式にいれるとベースラインつきREINFORCEMENTが得られる</li>
+
+</ul>
+<p>
+\[
+\nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  (R_t^m - \overline b)
+\]
+</p>
+<ul>
+<li>勾配の推定分散を減らすように \(b\) を設定して、推定精度を高める</li>
+
+</ul>
+
+</section>
+<section id="slide-orge51fe24">
+<h5 id="orge51fe24"><span class="section-number-5">3.3.6.4</span> Actor-Critic</h5>
+<ul>
+<li>行動に依存しないベースライン \(b\) に行動価値関数を使って、期待値を計
+算してみる</li>
+
+</ul>
+<div>
+\begin{aligned}
+\nabla_\theta J(\theta) &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) Q_\pi (s, a)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(Q_\pi (s, a) - V_\pi(s)\bigr)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(A\pi(s, a)] \\
+\end{aligned}
+
+</div>
+<ul>
+<li>この \(A\) をアドバンテージ関数と呼ぶ</li>
+<li>Actor Criticは推定されたアドバンテージ関数から勾配を求め、方策パラメー
+タを更新する</li>
+<li>自然勾配(勾配にフィッシャー情報行列の逆行列をかけたもの)を使うとより
+良いらしい</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeba7803">
+<h4 id="orgeba7803"><span class="section-number-4">3.3.7</span> 深層強化学習</h4>
+<ul>
+<li>お察しのとおり(?)、関数近似した価値関数や方策をニューラルネットで近似する</li>
+<li>後で詳しくやる</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb40bbab">
+<h4 id="orgb40bbab"><span class="section-number-4">3.3.8</span> 用語</h4>
+<ul>
+<li>だいたい説明したのでスキップします</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org6bc35b3">
+<h4 id="org6bc35b3"><span class="section-number-4">3.3.9</span> 強化学習のまとめ</h4>
+<p>
+雑に言うと
+</p>
+<ul>
+<li>適当に探索して平均をとる(モンテカルロ法)</li>
+<li>&darr; マルコフ性を活用して逐次学習する (TD誤差学習)</li>
+<li>&darr; メモリが足りないから関数近似する</li>
+<li>それとは別に方策を直接近似する手法もある</li>
+
+</ul>
+<p>
+みたいな感じ
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org07cdb2e">
+<h2 id="org07cdb2e"><span class="section-number-2">4</span> 主要な構成要素</h2>
+<ul>
+<li>深層強化学習のアルゴリズムが色々紹介されている</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org24347f6">
+<h3 id="org24347f6"><span class="section-number-3">4.1</span> 価値関数を使う手法</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgcf09a6a">
+<h4 id="orgcf09a6a"><span class="section-number-4">4.1.1</span> Deep Q Network</h4>
+<ul>
+<li>fitted Q(前述した)で Q(s, a)を関数近似し、回帰関数にニューラルネットを使う</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orga0b2132">
+<h4 id="orga0b2132"><span class="section-number-4">4.1.2</span> Double DQN</h4>
+<ul>
+<li>MAX Biasを減少させるために関数近似器を2つ使う</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb92b9e5">
+<h4 id="orgb92b9e5"><span class="section-number-4">4.1.3</span> 優先順位つき体験再生</h4>
+
+</section>
+</section>
+<section>
+<section id="slide-org1d0bcbd">
+<h4 id="org1d0bcbd"><span class="section-number-4">4.1.4</span> Dueling Architecture</h4>
+
+</section>
+</section>
+<section>
+<section id="slide-org8805e9c">
+<h4 id="org8805e9c"><span class="section-number-4">4.1.5</span> その他のDQNの拡張</h4>
+
+</section>
+</section>
+<section>
+<section id="slide-org1075f74">
+<h3 id="org1075f74"><span class="section-number-3">4.2</span> 方策を使う方法</h3>
+<div class="outline-text-3" id="text-4-2">
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgaac532f">
+<h4 id="orgaac532f"><span class="section-number-4">4.2.1</span> A3C</h4>
+<ul>
+<li>非同期アドバンテージ推定型Actor-Critic</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org16c9bfa">
+<h4 id="org16c9bfa"><span class="section-number-4">4.2.2</span> 方策勾配法</h4>
+</section>
+</section>
+<section>
+<section id="slide-orgc9dd4df">
+<h4 id="orgc9dd4df"><span class="section-number-4">4.2.3</span> オフポリシー型学習との併用</h4>
+</section>
+</section>
+<section>
+<section id="slide-org87dd7d9">
+<h3 id="org87dd7d9"><span class="section-number-3">4.3</span> 報酬を使う(？)方法</h3>
+<p>
+徒弟学習、逆強化学習
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgfee9981">
+<h4 id="orgfee9981"><span class="section-number-4">4.3.1</span> Deep Q-learning from Demonstrations</h4>
+</section>
+</section>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

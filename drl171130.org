@@ -1,0 +1,551 @@
+#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/
+#+REVEAL_MATHJAX_URL: /usr/share/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+#+REVEAL_HLEVEL: 3
+#+REVEAL_TRANS: default
+#+REVEAL_THEME: none
+#+HTML_HEAD: <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
+#+TITLE: DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)
+#+AUTHOR: 金川裕司(学際科学科3年)
+#+OPTIONS: toc:0
+#+OPTIONS: H:4
+* 概要
+- https://arxiv.org/abs/1701.07274 の1~3章の紹介
+- スライドのURL: https://kngwyu.github.io/
+- 参考にしたもの
+  -
+    [[http://incompleteideas.net/sutton/book/the-book-2nd.html][Sutton&Barto
+    の有名な教科書(改訂版のドラフト)]]
+  - [[http://rll.berkeley.edu/deeprlcourse/][UC Barkleyの講義資料]]
+  - [[http://www.morikita.co.jp/books/book/3034][これからの強化学習]],
+    [[http://bookclub.kodansha.co.jp/product?isbn=9784061538283][これならわかる深層学習入門]]
+- 重要なこと
+  - 価値関数を使用する方法(DQNとか)
+  - 方策勾配を使用する方法(Actor Critic, A3Cとか)
+* まえがき
+- 深層強化学習の隆盛(AlphaGoとか)
+  - 強化学習やニューラルネット自体は昔からあった
+  - 深層学習によるブレイクスルー
+- 背景、基礎理論、応用的な理論、実際の利用例等を概観する
+
+* 背景
+機械学習、深層学習、強化学習
+
+** 機械学習
+*** 教師あり学習・教師なし学習
+データから関数を学習する([[./drl1.pdf][図]])
+- 教師あり学習(識別、予測、回帰)
+  - 回帰、k近傍法、決定木、...
+- 教師なし学習(分類)
+  - 成分分解、混合分布、クラスタリング、...
+- 目標(サンプルデータと関数近似器との二乗誤差を最小化する、等)を決めて、関数近似器を学習させる
+- 過学習を防ぐために目標の決め方を工夫(正則化)
+- 万能な汎化法はないので、モデル同士の優劣基準も必要
+  - 交差検証、情報量基準(汎化損失、周辺尤度等に対応するように設計した統計量)など
+
+** 深層学習
+- 関数近似器として多層パーセプトロンモデルを使用した教師つき・教師なし
+  学習の手法
+- 詳細は割愛します
+** 強化学習
+よくわからない状況で、様子を見ながら行動する
+[[./drl2.png]]
+
+*** 定式化と用語
+- エージェント(Agent): 行動主体
+- エピソード(Episode): 一連の動作(囲碁一試合ぶん等)
+エピソード内でのあるタイム・ステップ $t \leq T$ において
+- 状態(State) $s_t \in \mathcal S$ 、行動(Action) $a_t \in \mathcal A(s_t)$
+- 環境により、各タイム・ステップごとに与えられるもの
+  - 報酬(Reward) $R_t \in \mathcal R$
+  - $t \rightarrow t+1$ になった瞬間に $R _{t+1}$ がもらえる
+- 環境により決まっているもの
+  - 遷移確率関数(Transition Probability) $P(s_{t+1}|s_t, a_t)$
+  - たいていの場合、エージェントはこれを知らない
+**** 定式化と用語 その2
+- エージェントに学習させるもの
+  - 方策(Policy) $\pi_t(a_t, s_t)$ 
+- エージェントを学習させるために設定したもの
+  - 収益(Goal)
+    - ある状態の価値を表すための指標
+    - 状態 $s$ から先で( $s$ に遷移したことが原因で)得られる報酬
+    - 近いRewardほど高く評価する割引報酬和\[G_t = \sum _{\tau =
+      0}^\infty \gamma^ \tau R_{t + 1 + \tau} = R_{t +1} + \gamma R_{t +
+      2} + \gamma ^2 R_{t + 3}... \] $(0 < \gamma < 1)$ がよく使われる
+      - $R_t$ を含まないことに注意
+      - 本によっては利得 $R_t$ と呼んでいることもある
+
+*** 価値関数
+最適な方策の基準として、状態と行動に価値を設定する。
+- 状態価値関数(State Value Function)
+  - ある方策 $\pi$ をとっているときのある状態 $s$ の状態価値を$$V_\pi(s)=\mathbb E _\pi [G_{t}| S_t= s]$$ とする
+  - ( $\mathbb E _\pi$ は方策 $\pi$ のもとでの期待値を表す)
+- 行動価値関数(Action Value Function)
+  - 同様に、ある状態 $s$ と行動 $a$ の行動価値を $$Q_\pi (s,a) =
+    \mathbb E _\pi [G_t | S_t = s, A_t = a]$$ とする。
+
+**** 相互作用の最も単純なモデル化: マルコフ決定過程(MDP)
+Rewardが、1つ前のタイム・ステップの状態・行動のみに依存し、2つ以上前に
+は依存しないとすると、報酬関数rは $$R_{t + 1} = r(S_t, A_t, S_{t+1})$$ と書け
+る。以後、特別なことわりをいれない限りこのような場合だけ考察する。
+- これでうまくいかない場合は部分観測マルコフ決定過程(POMDP)などを使う
+- マルコフ性を仮定しないとベルマン方程式は導出できないので、この論文の構成はおかしい
+  - $p (s', r|s, a)$ はマルコフ性を仮定している
+
+**** ベルマン方程式 その1
+- 遷移確率関数と報酬関数がわかれば、探索しなくても価値関数がわかる
+報酬の期待値を、線形性を使って分解して
+\begin{aligned}
+\small V_\pi(s) &\small =\mathbb E _\pi [G_{t}| S_t= s] \\
+&\small = \mathbb E_\pi[R_{t+1} | S_t = s] + \mathbb E _\pi[\gamma R _{t+2} + \gamma^2 R _{t+3} + ... | S_t = s] \\
+&\small = \mathbb E_\pi[R_{t+1} | S_t = s] + \gamma \mathbb E _\pi[R _{t+2} + \gamma R _{t+3} + ...| S_t= s] \\
+&\small = \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) r(s, a, s') \\
+&\scriptsize + \gamma   \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal
+S} P(s'|s, a) \mathbb E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] \\
+\end{aligned}
+**** ベルマン方程式 その2
+ここで、$\small E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] =
+V_\pi(s')$ だから、
+$$
+\small \therefore V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V_\pi(s') \bigr)
+$$
+価値関数に関する連立方程式ができた。行動価値も同様。
+\begin{aligned}
+\small Q_\pi (s, a)  \small =& \small \sum _{s' \in \mathcal S} P (s'|s, a)\bigl( r(s, a, s') + \gamma V_\pi(s')\bigr) \\
+& \small  ※ V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) Q_\pi (s, a) だから \\
+\small =& \small \sum _{s' \in S, r \in \mathcal R}  P (s'|s, a) \bigl( r(s, a, s') + \sum _{a' \in \mathcal A(s')} \pi (a'|s') Q_\pi (s', a') \bigr)
+\end{aligned}
+
+**** ベルマン最適方程式 
+\begin{aligned}
+\small V_* (s) & \small = \max _\pi V_\pi(s) ~~ \forall s \in \mathcal S \\
+&\small = \max _{a \in \mathcal A} \sum _{s' \in \mathcal S} p (s'|s, a) \bigl( r(s, a, s') + \gamma V_{*}(s') \bigr) \forall s \in \mathcal S \\
+\small Q_* (s, a) & \small = \max _\pi Q_\pi (s, a) ~~ \forall s \in \mathcal S, \forall a \in \mathcal A \\
+&\small = \sum _{s' \in \mathcal S} P (s'|s, a)\bigl( r(s, a, s') + \gamma \max _{a' \in \mathcal A} Q_* (s, a)\bigr) \forall s, a
+\end{aligned}
+なる価値関数を最適価値関数と呼ぶ。
+-  $V_*$ は最適方策 $\pi_*$ (価値が最大となる行動を常に選択)での価値関
+  数を与える
+-  $Q_*$ のもとでの貪欲方策は最適方策になる
+
+**** ベルマン方程式の解法 その1
+- ベルマン方程式やベルマン最適方程式は解けるの？
+  - 特に、最適のほうはmaxをとっているところが自分も含んでいるから、難しそう
+  - (補足)このような方程式を自己無撞着方程式と呼ぶ
+以下の更新(そのまま代入するだけ)を収束するまで反復することで、ベルマン
+方程式 $V_\pi(s)$ が解ける。
+\begin{aligned}
+V'_\pi(s)\xleftarrow[update]{}  \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V'_\pi(s') \bigr)
+\end{aligned}
+**** ベルマン方程式の解法 その2
+- $Q, V _* , Q _*$ についても同様に解ける
+- 更新を作用素 $B$ でおく( $V'_(s) \leftarrow B^\pi V$ )と $B^\pi$ が $V(s)$ の上
+  限ノルムに対する縮小写像になることから収束が示せる(らしい)
+- 
+
+*** 価値反復アルゴリズム
+- マルコフ性を仮定した上で、遷移確率$P(s_{t+1}|s_t, a_t)$ および報酬関
+  数 $r(S_t, A_t, S_{t+1})$ がわかれば、ベルマン最適方程式により最適方
+  策がわかる
+- が、わからないことの方が多そう
+- なので、探索しながら最適方策を探す方法を考えよう
+**** モンテカルロ法
+適当な方策で行動し、1エピソードぶん終わったあと
+\begin{aligned}
+V _{aftter}(s) &= V _{before} (s) + \eta \bigl( G(t) - V_i (s) \bigr) \\
+&=  (1 - \eta) V _{before} (s) + \eta G(t) ~~~\forall s \in \mathcal S
+\end{aligned}
+で価値関数を更新する
+- 価値関数の推定値のうち $\eta$ 割 だけ、得られた収益でおきかえている
+- いずれ標本平均に収束する
+- 収束は遅いが、仮定が少ないので頑健
+**** TD誤差学習 その1
+- マルコフ性を使おう!
+- ベルマン方程式の逐次代入解法では以下のように解いた
+$$
+V'(s) = B_\pi V = \mathbb E [R_{t+1} + \gamma V(s _{t + 1}) | s_t = s]
+$$
+- 期待値 $\mathbb E$ をサンプリング報酬 $R _{t+1}$ および現在の推定値
+  $V(s _{t+1})$ を使って近似する
+- ある方策のもとでサンプル $(s_t, s_{t+1}, R_{t+1})$ を得たとき
+$$
+\hat B_\pi V = r_{t + 1} + \gamma V (s_t + 1)
+$$
+で更新する。
+**** TD誤差学習 その2
+$s_{t + 1}$ に関し期待値をとると
+$$
+\mathbb E _\pi[\hat B_\pi V(s_t)|s_t] = E_\pi [r_{t+1} + \gamma
+V(s_{t+1})|s_t] = B_\pi V
+$$
+- 期待値が逐次代入解に一致したので、うまくいきそう
+- サンプルのばらつき(方策によるばらつき、報酬自体のばらつき)を考慮し、
+  学習率 $\alpha_t$ を導入して少しずつ学習する
+\begin{aligned}
+V(s_t) \xleftarrow[update]{} & (1- \alpha_t)V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1})\bigr) \\
+=&V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1}) - V(s_t) \bigr) 
+\end{aligned}
+- $R_t + \gamma V(s_{t + 1}) - V(s_t)$ をTD誤差(TD error)と呼ぶ
+- 学習係数を適切に減衰させればこれは収束する
+
+**** SARSA
+- TD誤差学習と同じことを $Q(s, a)$ についてやる
+- 更新式は
+$$
+\small Q(s_t, a_t)\xleftarrow[update]{} Q(s_t, a_t) + \alpha_t \bigl( R_{t+1} +
+\gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \bigr)
+$$
+
+**** 方策オン型、方策オフ型 その1
+- モンテカルロ法、TD誤差学習、SARSAは、いずれ「方策を固定した時の価値関数」に収束する
+- 最適方策を決めるには、最適価値関数が必要
+- 後述する仮定をおくと、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる
+$$
+\pi_i \xrightarrow[\pi _iで行動し価値関数を更新]{} Q_i \xrightarrow[Q_i に
+基づく貪欲方策]{} \pi _{i+1} ...
+$$
+**** 方策オン型、方策オフ型 その2
+- ただし、これだと全ての状態 $\mathcal S$ に到達しない場合があるので、
+  ヒューリスティクスを使う
+- 代表的なのは $\epsilon -\rm greedy$ (確率 $\epsilon$ で乱択、 $1-\epsilon$ で貪欲)
+- 目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
+  ぶ
+- 逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ
+- TD誤差学習、SARSAは方策オン型
+- モンテカルロ法はImportance Sampling等を使うと方策オフ型にできる(説明
+  略)
+- 基本的には方策オフ型の方がいい(効率がいいから)
+
+**** Q学習
+- TD誤差学習 と同じことを $Q_*(s, a)$ についてやる
+- 逐次代入法とサンプリング版の更新式は
+\begin{aligned}
+\small Q'(s, a) = B_*Q &= \mathbb E_P [R_{t + 1} + \gamma \max
+_{a_{t+1}} Q(s_{t+1}, a_{t+1})|s_t=s, a_t=a] \\
+\small \hat B_* Q(s_t, a_t) &= R_{t+1} + \gamma \max_{a_{t+1}}
+Q(s_{t+1}, a_{t+1})
+\end{aligned}
+- 学習係数を導入して
+$$
+\small Q(s, a)  \xleftarrow[update]{} Q(s, a) + \alpha_t \bigl( R_{t+1} +
+\max_{a_{t+1}} \gamma Q(s_{t+1}, a_{t+1}) - Q(s, a) \bigr)
+$$
+
+**** まとめ
+- 探索しながら価値関数を求めたい
+- マルコフ性を使えるならベルマン方程式をサンプリングによって近似的に解
+  くのが良さそうだし、実験的にも割とうまくいく
+- TD誤差学習
+  - $V_\pi(s)$ の計算に対応
+- SARSA
+  - $Q_\pi(s, a)$ の計算に対応
+- Q学習
+  - $Q_*(s, a)$ の計算に対応
+- $V_*(s, a)$ は？
+  - 無理
+  
+*** Multi-Step Bootstrapping
+- TD誤差学習では、タイムステップ一回ぶんのサンプルで学習していた
+$$
+V_{t+1}(s_t) \leftarrow  V_t(s_t) + \alpha_t \bigl(R_{t+1} + \gamma
+V_t(s_{t + 1}) - V_t(s_t) \bigr)
+$$
+- サンプルをたくさん使うようにしたら収束が早くなるかも
+- $n$ ステップ版TD誤差学習の更新関数は以下のようになる
+$$
+\scriptsize V_{t+ n}(s_t) \leftarrow  V_{t+n-1}(s_t) + \alpha_t
+\bigl(\sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n
+V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
+$$
+- Q学習やSARSAでも同様にできる
+
+**** 適格度トレーシング
+- よくわからなかった
+- $\frac{n}{T}=\lambda$ なる $\lambda$ を用いて、マルチステップ版のこ
+  とをTD(\lambda) と呼ぶらしい(多分)
+
+*** (価値関数法に対する)関数近似法
+- 今までの方法はテーブル表現されたものだった
+  - 状態、行動が多いとメモリにのらない
+- もっと軽い方法はないだろうか
+  - パラメトリックな方法を使おう
+
+**** 直接法 TD誤差学習 
+- テーブル表現された状態価値関数 $V(s) \forall s \in \mathcal S$ を関
+  数$\hat V (s|\theta)$ で近似し、次のように更新する
+\begin{aligned}
+\theta_{t+1} &= \theta{t}+ \alpha_t \Delta \theta_t \\
+\Delta \theta_t &:= \epsilon_{t+1} \partial_\theta \hat V_\pi (s_t |\theta_t) \\
+\epsilon_{t+1} &:= R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) (TD誤差)
+\end{aligned}
+- これは、関数 $\hat V_\pi(s|\theta)$ が以下のような線形関数で書けると
+  き、収束が保証される
+$$
+\hat V (s|\theta) = \theta^T \phi(s)
+$$
+
+**** 直接法 その他 
+- 一方、非線形な関数近似器の場合は方策オン型にしないと収束が保証されな
+  い
+- 同様に、TD(\lambda) やSARSA、Q学習も関数近似バージョンにできる
+- 例えば、Q学習は以下のように書ける
+\begin{aligned}
+\theta_{t+1} &= \theta{t}+ \alpha_t \Delta \theta_t \\
+\Delta \theta_t &:= \epsilon _{t+1}^* \partial_\theta \hat Q (s_t |\theta_t) \\
+\epsilon_{t+1}^* &:= R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1} | \theta_t) - \hat Q (s_t |\theta_t)
+\end{aligned}
+- 表を利用する方法をそのまま関数近似にしたので、直接法と呼ぶ
+
+**** 勾配TD法
+関数近似によるTD法の停留点は
+$$
+\mathbb E_\mu [\mathbb E_\pi[\epsilon_{t+1}|s_t] \partial_\theta \hat
+V_\pi(s_t|\theta)] = 0
+$$
+- これを停留点に持つ目的関数を以下のように定める
+$$
+J(\theta) = \biggl( \mathbb E_\mu [\mathbb E_\pi[\epsilon_{t+1}|s_t] \partial_\theta \hat
+V_\pi(s_t|\theta)]\biggr) ^2
+$$
+- これを確率勾配法によって最小化する(詳細は略)
+**** 最小二乗TD誤差法 (LSTD) その1
+- TD誤差二乗を最小化するのはどうか？
+  - 目的関数は $\small\mathbb E_\mu[\mathbb E_\pi[ \epsilon _{t+1}|s_t]^2]$
+  - ベルマン誤差: TD誤差の状態遷移確率(方策のぶんも含む)に関する期待値の二乗
+- TD誤差二乗の最小化
+\begin{aligned}
+J_{TD}(\theta) &= \mathbb E \mu[\mathbb E_\pi[\epsilon _{t+1}^2|s_t]] \\
+&= \mathbb E \mu[\mathbb E_\pi[R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) |s_t]^2] \\
+&\approx \frac{1}{T} \sum_{t=0}^{T-1} \biggl(R_{t+1} + \gamma \hat V_\pi(s_{t+1}|\theta_t) - \hat V_\pi (s_t |\theta_t) \biggr)^2
+\end{aligned}
+**** LSTD その2
+$\hat V_\pi (s_t |\theta_t) = \theta^T \phi_t$ とおくと
+$$
+\therefore J_{TD}(\theta) \approx  \frac{1}{T} \sum_{t=0}^{T-1}
+\biggl(R_{t+1} - \theta^T (\phi_t - \gamma\phi_{t+1})\biggr)^2
+$$
+- 報酬を行動に関連性がある(= ノイズと入力に相関がある)のでこれはバイア
+  スがかかった値になるから、「入力と相関するが出力ノイズと相関しない変
+  数」 $\mathcal W$ を使って目的関数を書きかえる(操作変数法)
+**** LSTD その3
+- $w_t$ として $\phi_t$ を用いると
+$$
+\small \theta_{IV} = \biggl( \frac{1}{t} \sum_{k=0}{t-1} \phi_k(\phi_k -
+\gamma \phi_{k+1})^T)^{-1} \biggr) \biggl( \frac{1}{t} \sum_{k=0}{t-1}
+\phi_k R_{k+1} \biggr)
+$$
+これがLSTD法の目的関数になる
+
+**** GTD2, TDC その1
+LSTD法は以下の別のコスト関数を近似的に最小化していると解釈できる
+\begin{aligned}
+\theta _{IV}^* &= \rm {arg} \min_\theta C _{PB} (\theta) \\
+C_{PB} (\theta) &= \mathbb E _\mu [(\hat V_\pi (s_t|\theta) - \Pi B_\pi \hat V_\pi (s_t|\theta))^2]
+\end{aligned}
+ただし、
+\begin{aligned}
+\Pi V(s_t) &= \hat V(s_t|\tilde{\theta}) \\
+\tilde{\theta} &= \rm arg \min_\theta \mathbb E_\mu [(V(s_t) - \hat V(s_t | \theta))^2]
+\end{aligned}
+この $C_{PB}$ は射影ベルマン残差の二乗になっている
+**** GTD2, TDC その2
+- この $C_PB$ を目的関数 $J$ とすると
+$$
+J_{PB}(\theta) = \mathbb E[\epsilon _{t+1}\phi_t]^T \mathbb E[\phi_t \phi_t ^T]^{-1} \mathbb E[\epsilon _{t+1}\phi_t]
+$$
+- このパラメータ勾配は、$w := \mathbb E[\phi_t \phi_t ^T]^{-1} \mathbb E[\epsilon _{t+1}\phi_t]$ とおくと、以下のように書ける
+\begin{aligned}
+\frac{\partial J _{PB}(\theta)}{ \partial \theta} &= -2 \mathbb E[(\phi_t - \gamma\phi _{t+1})\phi _t ^T] w \\
+&= -2 \mathbb E[\epsilon _{t+1}\phi_t] + 2 \gamma \mathbb E[\phi _{t+1} \phi_t^T]w \\
+\end{aligned}
+
+**** GTD2, TDC その3
+- $w$ は以下の二乗誤差を最小化する解として解釈できる
+$$
+J_w (w) = \mathbb E [(\phi_t ^T - \epsilon_{t+1})^2]
+$$
+$$
+w _{t+1} = w_t - \beta _t \phi_t (\phi_t ^T w_t - \epsilon _{t+1}) (\therefore 最急勾配法から)
+$$
+これとさっきの式を最急勾配した
+$$
+\theta _{t+1} = \theta_t + \alpha_t (\phi_t - \gamma\phi _{t+1}) \phi_t^T w_t
+$$
+または
+$$
+\theta _{t+1} = \theta_t + \alpha_t (\epsilon _{t+1} \phi_t - \gamma \phi_t^T w_t)\phi _{t+1}
+$$
+とあわせて $\theta$ , $\beta$ の更新式を得る(前者がGTD2, 後者がTDC)
+- 計算が軽くなった
+
+**** LSPE その1
+$J_{PB}$ の min を目的関数にする
+$$
+\min_\theta J_{PB}(\theta) = \min _\theta \mathbb E _\mu [(\hat V _\pi (s_t | \theta) - \Pi B_\pi \hat V_\pi (s_t|\theta))^2] \\
+\Pi B_\pi \hat V_\pi (s_t|\theta) = \rm{ arg} \min _{\hat V
+(s_t|\theta')} \mathbb E _\mu [(\hat V (s_t|\theta') - B_\pi \hat V_\pi (s_t|\theta))^2]
+$$
+パラメータ $w$ を持つ線形関数近似器 $\phi _t ^T w$ を導入すると、
+$$
+\min_\theta J_{PB}(\theta) = \min _\theta \mathbb E _\mu [(\phi_t^T
+\theta - \phi_t^T w)^2] \\
+\phi_t^T w = \rm arg \min _{\phi_t^T w'} \mathbb E _\mu [(\phi_t^T
+w' - B_\pi (\phi_t^T\theta))^2]
+$$
+**** LSPE その2
+$\theta$ を逐次代入で、 $w$
+をバッチ型で解析的に解くと、以下の更新式が得られる
+$$
+\theta _{t+1} = \theta _t + \alpha_t (w_t - \theta_t) \\
+w _{t+1} = - \mathbb E [\phi _t \phi_t^T]^{-1} (A _{TD} \theta _{t+1} - b_{TD})
+$$
+- Aはアドバンテージ関数(後述)
+
+**** LSPI, GQ
+- LSTD, GTDと同じ操作を Qについてやる
+- 略
+
+**** fitted Q その1
+- LSPEと同じ操作を Qについてやる まず目的関数は以下のようになる
+\begin{aligned}
+\min_\theta J_Q(\theta) &= \min_\theta \mathbb E_\mu [(\hat Q(s_t, a_t|\theta) - B_* \hat Q (s_t, a_t|\theta))^2]\\
+B_* \hat Q (s_t, a_t|\theta) &= \mathbb E _P [R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1}|\theta)|s_t, a_t]
+\end{aligned}
+- これを $\theta$ について解くのは容易でないので、 $w(s_t, a_t) = B_*
+  \hat Q (s_t, a_t|\theta))$ を導入して以下のように分割し教師つき学習の
+  問題にする
+$$
+\theta _{k+1} = \rm{ arg} \min _\theta \mathbb E _\mu [(\hat Q(s_t,
+a_t | \theta) - w(s_t, a_t))^2] \\
+w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
+(s_{t+1}, a_{t+1} | \theta_k) | s_t, a_t]
+$$
+
+**** fitted Q その2
+- $w$ が教師出力、$\hat Q(s_t, a_t | \theta)$ が教師出力を近似するパラ
+  メータ $\theta$ を持つ 入力 $(s_t, a_t)$ の関数近似器
+- 期待値を適当な方策にしたがって得られたサンプル平均でおきかえてこれを
+  解く
+- 関数近似器にニューラルネットを使ったものは neural fitted Q と呼ばれ
+  る
+- 収束の保証はLSTD等と比べてかなり厳しい(収束が保証されるケースは少な
+  い)が、Atari 2600 での Deep Q Networkなどこれを使ってうまくいったケー
+  スもある
+
+*** 方策勾配法
+- 主に、行動が連続値である場合(制御とか)に用いられる手法
+- 行動価値関数を使用せず、直接方策を求める
+- 方策を何らかの確率モデルで表現し、勾配を使って最適化
+- 方策の表現例(ガウスモデル)(Cは共分散行列)
+$$
+\pi_\theta (a|s) = \frac{1}{2\pi^(d_a / 2) |C|^{1/2}} exp \biggl( 
+-\frac{1}{2}(a - W s)^T C^{-1} (a - Ws)
+\biggr)
+$$
+
+**** 方策 $\pi _\theta$ の更新
+$$
+\theta^{t+1} = \theta^t + \eta \nabla_\theta J(\theta)
+$$
+- \eta は学習率
+- 方策勾配定理により、勾配は行動価値関数 $Q(s, a)$ を使って以下のよう
+  に書ける(証明略)
+\begin{aligned}
+ \nabla_\theta J(\theta) &= [ \frac{\partial J(\theta)}{\partial \theta_1},..., \frac{\partial J(\theta)}{\partial \theta_d} ] ^T \\
+&= \mathbb E _\pi\theta [\frac{\partial \pi_\theta (a|s)}{\partial \theta} \frac{1}{\pi_\theta (a|s)} Q^\pi (s, a)] \\
+&= \mathbb E _\pi\theta [\nabla _\theta \log  \pi_\theta (a|s) Q_\pi (s, a)]
+\end{aligned}
+
+**** REINFORCEMENT
+- この式をサンプルを使って近似する
+$$
+ \nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  Q_\pi (s_t^m,a_t^m)
+$$
+- $s_t^m$ はmエピソード目でtステップ目の状態 aも同様
+- この式の $Q_\pi(s_t, a_t)$ を即時報酬 $R_t$ で近似したのが
+  (ベースラインを使わない)REINFORCEMENTで、
+$$
+\nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  R_t^m
+$$
+のようになる
+
+**** REINFORCEMRNT wirh Baseline
+- 行動に依存しないベースライン $b$ を
+  勾配の期待値の式にいれても、期待値は変わらない
+\begin{aligned}
+\nabla_\theta J(\theta) &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) Q_\pi (s, a)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(Q_\pi (s, a) - b_\pi(s)\bigr)] \\
+\end{aligned}
+- $b$ を平均報酬 $\overline b$ 等として、さっきの式にいれるとベースラインつきREINFORCEMENTが得られる
+$$
+\nabla_\theta J(\theta) \approx \frac{1}{M} \sum_{m=1}{M}
+\frac{1}{T} \sum_{t=1}{T} \nabla _\theta \log  \pi_\theta
+(a_t^m|s_t^m)  (R_t^m - \overline b)
+$$
+- 勾配の推定分散を減らすように $b$ を設定して、推定精度を高める
+
+**** Actor-Critic
+- 行動に依存しないベースライン $b$ に行動価値関数を使って、期待値を計
+  算してみる
+\begin{aligned}
+\nabla_\theta J(\theta) &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) Q_\pi (s, a)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(Q_\pi (s, a) - V_\pi(s)\bigr)] \\
+ &= \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) \bigl(A\pi(s, a)] \\
+\end{aligned}
+- この $A$ をアドバンテージ関数と呼ぶ
+- Actor Criticは推定されたアドバンテージ関数から勾配を求め、方策パラメー
+  タを更新する
+- 自然勾配(勾配にフィッシャー情報行列の逆行列をかけたもの)を使うとより
+  良いらしい
+
+*** 深層強化学習
+- お察しのとおり(?)、関数近似した価値関数や方策をニューラルネットで近似する
+- 後で詳しくやる
+
+*** 用語
+- だいたい説明したのでスキップします
+*** 強化学習のまとめ
+雑に言うと
+- 適当に探索して平均をとる(モンテカルロ法)
+- \downarrow マルコフ性を活用して逐次学習する (TD誤差学習)
+- \downarrow メモリが足りないから関数近似する
+- それとは別に方策を直接近似する手法もある
+みたいな感じ
+
+* 主要な構成要素
+- 深層強化学習のアルゴリズムが色々紹介されている
+** 価値関数を使う手法
+
+*** Deep Q Network
+- fitted Q(前述した)で Q(s, a)を関数近似し、回帰関数にニューラルネットを使う
+*** Double DQN
+- MAX Biasを減少させるために関数近似器を2つ使う
+
+*** 優先順位つき体験再生
+
+*** Dueling Architecture
+
+*** その他のDQNの拡張
+
+** 方策を使う方法
+
+*** A3C
+- 非同期アドバンテージ推定型Actor-Critic
+*** 方策勾配法
+*** オフポリシー型学習との併用
+** 報酬を使う(？)方法
+徒弟学習、逆強化学習
+*** Deep Q-learning from Demonstrations
+
+
+
+
+
