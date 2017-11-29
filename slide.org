@@ -1,5 +1,5 @@
 #+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/
-#+REVEAL_MATHJAX_URL: /usr/share/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+#+REVEAL_MATHJAX_URL: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 #+REVEAL_HLEVEL: 3
 #+REVEAL_TRANS: default
 #+REVEAL_THEME: none
@@ -10,7 +10,7 @@
 #+OPTIONS: H:4
 * 概要
 - https://arxiv.org/abs/1701.07274 の1~3章の紹介
-- スライドのURL: https://kngwyu.github.io/
+- スライドのURL: https://kngwyu.github.io/drl171130/slide.html
 - 参考にしたもの
   -
     [[http://incompleteideas.net/sutton/book/the-book-2nd.html][Sutton&Barto
@@ -323,7 +323,7 @@ $$
 \therefore J_{TD}(\theta) \approx  \frac{1}{T} \sum_{t=0}^{T-1}
 \biggl(R_{t+1} - \theta^T (\phi_t - \gamma\phi_{t+1})\biggr)^2
 $$
-- 報酬を行動に関連性がある(= ノイズと入力に相関がある)のでこれはバイア
+- 報酬と行動に関連性がある(= ノイズと入力に相関がある)のでこれはバイア
   スがかかった値になるから、「入力と相関するが出力ノイズと相関しない変
   数」 $\mathcal W$ を使って目的関数を書きかえる(操作変数法)
 **** LSTD その3
@@ -336,6 +336,7 @@ $$
 これがLSTD法の目的関数になる
 
 **** GTD2, TDC その1
+- (勾配を使って効率を良くしたい)
 LSTD法は以下の別のコスト関数を近似的に最小化していると解釈できる
 \begin{aligned}
 \theta _{IV}^* &= \rm {arg} \min_\theta C _{PB} (\theta) \\
@@ -346,9 +347,9 @@ C_{PB} (\theta) &= \mathbb E _\mu [(\hat V_\pi (s_t|\theta) - \Pi B_\pi \hat V_\
 \Pi V(s_t) &= \hat V(s_t|\tilde{\theta}) \\
 \tilde{\theta} &= \rm arg \min_\theta \mathbb E_\mu [(V(s_t) - \hat V(s_t | \theta))^2]
 \end{aligned}
-この $C_{PB}$ は射影ベルマン残差の二乗になっている
+$C_{PB}$ の最小化はTD誤差二乗の最小化と等価
 **** GTD2, TDC その2
-- この $C_PB$ を目的関数 $J$ とすると
+- この $C _{PB}$ を目的関数 $J$ とすると
 $$
 J_{PB}(\theta) = \mathbb E[\epsilon _{t+1}\phi_t]^T \mathbb E[\phi_t \phi_t ^T]^{-1} \mathbb E[\epsilon _{t+1}\phi_t]
 $$
@@ -408,11 +409,10 @@ $$
 - LSPEと同じ操作を Qについてやる まず目的関数は以下のようになる
 \begin{aligned}
 \min_\theta J_Q(\theta) &= \min_\theta \mathbb E_\mu [(\hat Q(s_t, a_t|\theta) - B_* \hat Q (s_t, a_t|\theta))^2]\\
-B_* \hat Q (s_t, a_t|\theta) &= \mathbb E _P [R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1}|\theta)|s_t, a_t]
+ただし B_* \hat Q (s_t, a_t|\theta) &= \mathbb E _P [R_{t+1} + \gamma \max_{a_{t+1}} \hat Q (s_{t+1}, a_{t+1}|\theta)|s_t, a_t]
 \end{aligned}
 - これを $\theta$ について解くのは容易でないので、 $w(s_t, a_t) = B_*
-  \hat Q (s_t, a_t|\theta))$ を導入して以下のように分割し教師つき学習の
-  問題にする
+  \hat Q (s_t, a_t|\theta))$ を導入して分割する
 $$
 \theta _{k+1} = \rm{ arg} \min _\theta \mathbb E _\mu [(\hat Q(s_t,
 a_t | \theta) - w(s_t, a_t))^2] \\
@@ -423,15 +423,14 @@ $$
 **** fitted Q その2
 - $w$ が教師出力、$\hat Q(s_t, a_t | \theta)$ が教師出力を近似するパラ
   メータ $\theta$ を持つ 入力 $(s_t, a_t)$ の関数近似器
-- 期待値を適当な方策にしたがって得られたサンプル平均でおきかえてこれを
-  解く
-- 関数近似器にニューラルネットを使ったものは neural fitted Q と呼ばれ
-  る
-- 収束の保証はLSTD等と比べてかなり厳しい(収束が保証されるケースは少な
-  い)が、Atari 2600 での Deep Q Networkなどこれを使ってうまくいったケー
-  スもある
-
-*** 方策勾配法
+- 期待値を適当な方策にしたがって得られたサンプル平均でおきかえて学習する
+- 収束の保証はないが、DQN(後述)などこれを使ってうまくいったケースもある
+**** 補足 方策オン・オフ
+- 関数近似しない場合と同様にQ_* 派生は方策オフで学習できるし、Q_\pi 派生
+  のものは方策オンにしないと無理
+- LSTD系はモンテカルロ法のImportance Samplingと似たような方法で方策オ
+  フ型にできる(略)
+*** 方策勾配を使う方法
 - 主に、行動が連続値である場合(制御とか)に用いられる手法
 - 行動価値関数を使用せず、直接方策を求める
 - 方策を何らかの確率モデルで表現し、勾配を使って最適化
@@ -489,7 +488,8 @@ $$
 $$
 - 勾配の推定分散を減らすように $b$ を設定して、推定精度を高める
 
-**** Actor-Critic
+**** Actor-Critic その1
+- REINFORCEMENTは結局モンテカルロ法で近似しているだけなので、遅い
 - 行動に依存しないベースライン $b$ に行動価値関数を使って、期待値を計
   算してみる
 \begin{aligned}
@@ -498,20 +498,46 @@ $$
  &= \mathbb E _\pi\theta [\nabla _\theta \log
 \pi_\theta (a|s) \bigl(Q_\pi (s, a) - V_\pi(s)\bigr)] \\
  &= \mathbb E _\pi\theta [\nabla _\theta \log
-\pi_\theta (a|s) \bigl(A\pi(s, a)] \\
+\pi_\theta (a|s) A\pi(s, a)] \\
 \end{aligned}
-- この $A$ をアドバンテージ関数と呼ぶ
-- Actor Criticは推定されたアドバンテージ関数から勾配を求め、方策パラメー
-  タを更新する
-- 自然勾配(勾配にフィッシャー情報行列の逆行列をかけたもの)を使うとより
-  良いらしい
+- この $A$ をアドバンテージ関数と呼び、状態 $s$ における 行動 $a$ の相
+  対的な良さを表す
+- 推定されたアドバンテージ関数から勾配を求め、方策パラメータを更新する
+**** Actor-Critic その2
+- Criticにあたる $V_\pi$ の値はサンプリングした値をもとに適当に近似する
+- 実際の学習の流れ
+  - 方策 $\pi _\theta$ で行動
+  - $V_\pi$ をサンプル値から適当に近似
+  - $A_\pi (s)$  今までの推測値から計算
+  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - 方策パラメタを更新
+
+**** Actor-Critic 補足
+アドバンテージ関数を線形モデル
+$$
+A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
+$$
+で近似すると
+
+\begin{aligned}
+\nabla _\theta J(\theta) &= \mathbb E _{\pi\theta} [\nabla_\theta \log \pi_ \theta (a|s) \nabla _\theta \log \pi _\theta (a|s)^ {\rm T} w] \\
+&= F(\theta)w (Fはフィッシャー情報行列)
+\end{aligned}
+自然勾配を使うと
+\begin{aligned}
+\nabla ^{NG}_\theta J(\theta ) &= F ^ {-1}(\theta ) F(\theta ) w \\
+&= w
+\end{aligned}
+- これを Natural Actor-Criticと呼ぶ
+
 
 *** 深層強化学習
 - お察しのとおり(?)、関数近似した価値関数や方策をニューラルネットで近似する
 - 後で詳しくやる
 
 *** 用語
-- だいたい説明したのでスキップします
+- スキップします
 *** 強化学習のまとめ
 雑に言うと
 - 適当に探索して平均をとる(モンテカルロ法)
@@ -525,20 +551,89 @@ $$
 ** 価値関数を使う手法
 
 *** Deep Q Network
+- ご存知DeepMindが2013年にNIPSで、2015年にNatureで発表
+- [[https://www.nature.com/articles/nature14236][Nature版のリンク]]
+- Atari 2600 の ビデオゲームをエージェントに学習させた
 - fitted Q(前述した)で Q(s, a)を関数近似し、回帰関数にニューラルネットを使う
-*** Double DQN
-- MAX Biasを減少させるために関数近似器を2つ使う
+**** DQNの全体像
+[[~/Dropbox/nature14236-f1.jpeg][Nature版の図]]
+- 入力は4フレーム飛ばしで画像にして前処理してCNNに投げる
+- 目的関数は fitted-Qを使って固定する(前述した通り)
+  - fitted-Qは他の手法と違って目的関数をある程度固定できるので、収束が
+    安定する
+- 画面入力は強い相関を持つ(時系列データなので当然)ので、バイアスを減ら
+  し収束しやすくするため体験再生(experience replay)が使われる
+  -  $Past(s _{t+1)) = (s_t, r_t)$ を記録し、記録した中からランダムに選ん
+    で学習
+  - サンプルの利用効率も上がる
+
+*** Double Q Learning
+- これもDeepMind(https://arxiv.org/abs/1509.06461)
+- そもそもQ学習はmaxをとるので、外れ値の影響が出やすい
+- 関数近似特有のバイアスもある
+  - 近似されたQ値を
+$$
+\hat Q(s, a_ {learned}) = Q_* (s, a_ {opt}) + \epsilon (誤差)
+$$
+とおくと
+$$
+E_ \epsilon [\hat Q(s, a_ {learned})] \geq  Q_* (s, a_ {opt})
+$$
+
+**** Double Q Learning その2
+- バイアスに対処するために、関数近似器を二つ用意して、ランダムに以下の2種類のどちらかの更新を行う
+\begin{aligned}
+\small Q_1 (s, a) \xleftarrow[update]{} (1-\alpha)Q_1(s, a) + \alpha(R_t +\gamma Q_2 (S', \rm{arg} \max_a Q_1(s', a))) \\
+\small Q _2 (s, a) \xleftarrow[update]{} (1-\alpha)Q _2(s, a) + \alpha(R_t +\gamma Q_1 (S', \rm{arg} \max_a Q_2 (s', a)))
+\end{aligned}
+- バイアスを互いに補正しあう感じ(？)
 
 *** 優先順位つき体験再生
-
+- これもDeepMind(https://arxiv.org/abs/1511.05952)
+サンプル $i$ の重要性を
+$$
+p_i = |TD_i | +\epsilon
+$$
+で表し、
+$$
+P(i) = \frac{p_i ^\alpha}{\sum_k p_k ^\alpha}
+$$
+でサンプル $i$ を採択する
+- なぜうまくいくのかよくわからない...
 *** Dueling Architecture
+- これもDeepMind(https://arxiv.org/abs/1511.06581)(えぇ..)
+- 図は論文で...
+- 畳みこみ層のあとに、Q値とAdvantage関数に
+- Advantage関数を思い出そう(Actor-Criticででてきた)
+$$
+A_ \pi(s, a) =  Q_\pi (s, a) - V_\pi(s)
+$$
+- 状態 $s$ における 行動 $a$ の相対的な良さを表している
+- $Q$ を $V$ と $A$ にわける(目標関数を2種類使う)ことでバイアスを減ら
+  す
+$$
+Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a) 
+$$
+
 
 *** その他のDQNの拡張
+スキップします
 
 ** 方策を使う方法
 
 *** A3C
 - 非同期アドバンテージ推定型Actor-Critic
+- これもDeepMind(https://arxiv.org/abs/1602.01783)
+- 
+
+**** Asyncronious
+- 復習 Actor-Critic
+  - 方策 $\pi _\theta$ で行動
+  - $V_\pi$ をサンプル値から適当に近似
+  - $A_\pi (s)$  今までの推測値から計算
+  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - 方策パラメタを更新
 *** 方策勾配法
 *** オフポリシー型学習との併用
 ** 報酬を使う(？)方法
