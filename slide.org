@@ -10,17 +10,17 @@
 #+OPTIONS: H:4
 * 概要
 - https://arxiv.org/abs/1701.07274 の1~3章の紹介
-- スライドのURL: https://kngwyu.github.io/drl171130/slide.html
 - 参考にしたもの
-  -
-    [[http://incompleteideas.net/sutton/book/the-book-2nd.html][Sutton&Barto
-    の有名な教科書(改訂版のドラフト)]]
+  - 
+     [[http://incompleteideas.net/sutton/book/the-book-2nd.html][Sutton&Barto
+     の有名な教科書(改訂版のドラフト)]]
   - [[http://rll.berkeley.edu/deeprlcourse/][UC Barkleyの講義資料]]
   - [[http://www.morikita.co.jp/books/book/3034][これからの強化学習]],
     [[http://bookclub.kodansha.co.jp/product?isbn=9784061538283][これならわかる深層学習入門]]
 - 重要なこと
   - 価値関数を使用する方法(DQNとか)
   - 方策勾配を使用する方法(Actor Critic, A3Cとか)
+  - 教師あり学習への応用(逆強化学習、見ならい学習)
 * まえがき
 - 深層強化学習の隆盛(AlphaGoとか)
   - 強化学習やニューラルネット自体は昔からあった
@@ -617,16 +617,14 @@ $$
 
 
 *** その他のDQNの拡張
-スキップします
-
+後で追加します
 ** 方策を使う方法
 
 *** A3C
 - 非同期アドバンテージ推定型Actor-Critic
 - これもDeepMind(https://arxiv.org/abs/1602.01783)
-- 
 
-**** Asyncronious
+**** A3C その1
 - 復習 Actor-Critic
   - 方策 $\pi _\theta$ で行動
   - $V_\pi$ をサンプル値から適当に近似
@@ -634,10 +632,37 @@ $$
   - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
 \pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
   - 方策パラメタを更新
-*** 方策勾配法
+- $V_\pi$ をサンプル値から適当に近似 => ここがバッチ的(というか、「ま
+  とめて解析的に解く」部分)なので並列化できそう
+
+**** A3C その2
+- オンライン化 & 割引率(Aが発散しないように)の導入
+  - 方策 $\pi _\theta$ で行動
+  - $V_\pi$ を $r + \gamma V_\pi(s')$ で更新
+  - $A_\pi (s) = r(s, a)+\gammaV_\pi(s') - V_\pi(s)$  
+  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
+\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - 方策パラメタを更新
+**** A3C その3
+- 非同期化
+- スレッドごとのパラメータ $\theta'$、全体のパラメータ $\theta$
+- 以下を繰返す
+  - $\theta' \leftarrow \theta$
+  - $\theta'$ で 勾配を計算
+  - $\theta$ を更新
+*** その他のトピック
+**** 決定的方策勾配法
+- http://proceedings.mlr.press/v32/silver14.pdf
+
+**** Trust Region Policy Optimization
+- https://arxiv.org/abs/1502.05477
 *** オフポリシー型学習との併用
+後で追加します
 ** 報酬を使う(？)方法
-徒弟学習、逆強化学習
+
+*** (補足)逆強化学習、見ならい学習
+- 最適行動から報酬関数を推定(Ng(人の名前))
+- エキスパートの行動軌跡から報酬関数を推定(Abbeel)
 *** Deep Q-learning from Demonstrations
 
 
