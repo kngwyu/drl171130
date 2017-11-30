@@ -5,7 +5,6 @@
 #+REVEAL_THEME: none
 #+HTML_HEAD: <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
 #+TITLE: DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)
-#+AUTHOR: 金川裕司(学際科学科3年)
 #+OPTIONS: toc:0
 #+OPTIONS: H:4
 * 概要
@@ -178,7 +177,7 @@ $$
 V(s_{t+1})|s_t] = B_\pi V
 $$
 - 期待値が逐次代入解に一致したので、うまくいきそう
-- サンプルのばらつき(方策によるばらつき、報酬自体のばらつき)を考慮し、
+- サンプルの偏り(方策による偏り、報酬自体の分散)を考慮し、
   学習率 $\alpha_t$ を導入して少しずつ学習する
 \begin{aligned}
 V(s_t) \xleftarrow[update]{} & (1- \alpha_t)V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1})\bigr) \\
@@ -435,6 +434,7 @@ $$
 - 行動価値関数を使用せず、直接方策を求める
 - 方策を何らかの確率モデルで表現し、勾配を使って最適化
 - 方策の表現例(ガウスモデル)(Cは共分散行列)
+
 $$
 \pi_\theta (a|s) = \frac{1}{2\pi^(d_a / 2) |C|^{1/2}} exp \biggl( 
 -\frac{1}{2}(a - W s)^T C^{-1} (a - Ws)
@@ -504,13 +504,12 @@ $$
   対的な良さを表す
 - 推定されたアドバンテージ関数から勾配を求め、方策パラメータを更新する
 **** Actor-Critic その2
-- Criticにあたる $V_\pi$ の値はサンプリングした値をもとに適当に近似する
+- Criticにあたる $V_\pi$ の値はサンプリングした値をもとに適当に近似した $\hat V\pi$ を使う
 - 実際の学習の流れ
   - 方策 $\pi _\theta$ で行動
-  - $V_\pi$ をサンプル値から適当に近似
-  - $A_\pi (s)$  今までの推測値から計算
-  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
-\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - $\hat V_\pi$ をサンプル値から適当に近似
+  - $A_\pi (s) = r(s, a) + \hat V_\pi(s') - \hat V_\pi(s)$ で Aを近似
+  - 勾配 $\mathbb E _\pi \theta [ \nabla _\theta \log \pi_\theta(a|s) A_\pi (s, a)]$ を推測値の和で近似して計算
   - 方策パラメタを更新
 
 **** Actor-Critic 補足
@@ -629,23 +628,18 @@ $$
   - 方策 $\pi _\theta$ で行動
   - $V_\pi$ をサンプル値から適当に近似
   - $A_\pi (s)$  今までの推測値から計算
-  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
-\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - 勾配 $\mathbb E _\pi \theta [ \nabla _\theta \log \pi_\theta(a|s) A_\pi (s, a)]$ を推測値の和で近似して計算
   - 方策パラメタを更新
-- $V_\pi$ をサンプル値から適当に近似 => ここがバッチ的(というか、「ま
-  とめて解析的に解く」部分)なので並列化できそう
-
 **** A3C その2
 - オンライン化 & 割引率(Aが発散しないように)の導入
   - 方策 $\pi _\theta$ で行動
   - $V_\pi$ を $r + \gamma V_\pi(s')$ で更新
-  - $A_\pi (s) = r(s, a)+\gammaV_\pi(s') - V_\pi(s)$  
-  - 勾配 $ \mathbb E _\pi\theta [\nabla _\theta \log
-\pi_\theta (a|s) A\pi(s, a)]$ を 推測値の和で近似して計算
+  - $A_\pi (s) = r(s, a)+\gamma V_\pi(s') - V_\pi(s)$  
+  - 勾配 $\mathbb E _\pi \theta [ \nabla _\theta \log \pi_\theta(a|s) A_\pi (s, a)]$ を推測値の和で近似して計算
   - 方策パラメタを更新
 **** A3C その3
 - 非同期化
-- スレッドごとのパラメータ $\theta'$、全体のパラメータ $\theta$
+- スレッドごとのパラメータ $\theta'$ 、全体のパラメータ $\theta$ として、並列に学習を実行
 - 以下を繰返す
   - $\theta' \leftarrow \theta$
   - $\theta'$ で 勾配を計算
