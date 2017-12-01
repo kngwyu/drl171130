@@ -5,7 +5,7 @@
 #+REVEAL_THEME: none
 #+HTML_HEAD: <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
 #+TITLE: DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)
-#+OPTIONS: toc:0
+#+OPTIONS: toc:2
 #+OPTIONS: H:4
 * 概要
 - https://arxiv.org/abs/1701.07274 の1~3章の紹介
@@ -18,7 +18,7 @@
     [[http://bookclub.kodansha.co.jp/product?isbn=9784061538283][これならわかる深層学習入門]]
 - 重要なこと
   - 価値関数を使用する方法(DQNとか)
-  - 方策勾配を使用する方法(Actor Critic, A3Cとか)
+  - 方策勾配を使用する方法(A3Cとか)
   - 教師あり学習への応用(逆強化学習、見ならい学習)
 * まえがき
 - 深層強化学習の隆盛(AlphaGoとか)
@@ -78,6 +78,7 @@
 - 状態価値関数(State Value Function)
   - ある方策 $\pi$ をとっているときのある状態 $s$ の状態価値を$$V_\pi(s)=\mathbb E _\pi [G_{t}| S_t= s]$$ とする
   - ( $\mathbb E _\pi$ は方策 $\pi$ のもとでの期待値を表す)
+  - 「その状態に遷移することでどれくらい報酬が得られるか」をモデル化している
 - 行動価値関数(Action Value Function)
   - 同様に、ある状態 $s$ と行動 $a$ の行動価値を $$Q_\pi (s,a) =
     \mathbb E _\pi [G_t | S_t = s, A_t = a]$$ とする。
@@ -103,11 +104,12 @@ S} P(s'|s, a) \mathbb E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] \\
 \end{aligned}
 **** ベルマン方程式 その2
 ここで、$\small E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] =
-V_\pi(s')$ だから、
+V_\pi(s')$ より
 $$
 \small \therefore V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V_\pi(s') \bigr)
 $$
-価値関数に関する連立方程式ができた。行動価値も同様。
+- 価値関数に関する連立方程式ができた
+- 行動価値についても同様に求められる
 \begin{aligned}
 \small Q_\pi (s, a)  \small =& \small \sum _{s' \in \mathcal S} P (s'|s, a)\bigl( r(s, a, s') + \gamma V_\pi(s')\bigr) \\
 & \small  ※ V_\pi(s) = \sum _{a \in \mathcal A(s)} \pi (a|s) Q_\pi (s, a) だから \\
@@ -133,13 +135,12 @@ $$
 以下の更新(そのまま代入するだけ)を収束するまで反復することで、ベルマン
 方程式 $V_\pi(s)$ が解ける。
 \begin{aligned}
-V'_\pi(s)\xleftarrow[update]{}  \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V'_\pi(s') \bigr)
+V _\pi(s) \xleftarrow[update]{} \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' \in \mathcal S}P(s'|s, a) \bigl( r(s, a, s')+\gamma V_\pi(s') \bigr)
 \end{aligned}
 **** ベルマン方程式の解法 その2
 - $Q, V _* , Q _*$ についても同様に解ける
-- 更新を作用素 $B$ でおく( $V'_(s) \leftarrow B^\pi V$ )と $B^\pi$ が $V(s)$ の上
+- 更新操作を作用素 $B^\pi$ でおく( $V' \leftarrow B^\pi V$ )と $B^\pi$ が $V$ の上
   限ノルムに対する縮小写像になることから収束が示せる(らしい)
-- 
 
 *** 価値反復アルゴリズム
 - マルコフ性を仮定した上で、遷移確率$P(s_{t+1}|s_t, a_t)$ および報酬関
@@ -161,15 +162,15 @@ V _{aftter}(s) &= V _{before} (s) + \eta \bigl( G(t) - V_i (s) \bigr) \\
 - マルコフ性を使おう!
 - ベルマン方程式の逐次代入解法では以下のように解いた
 $$
-V'(s) = B_\pi V = \mathbb E [R_{t+1} + \gamma V(s _{t + 1}) | s_t = s]
+V (s) = B_\pi V = \mathbb E [R_{t+1} + \gamma V(s _{t + 1}) | s_t = s]
 $$
 - 期待値 $\mathbb E$ をサンプリング報酬 $R _{t+1}$ および現在の推定値
   $V(s _{t+1})$ を使って近似する
 - ある方策のもとでサンプル $(s_t, s_{t+1}, R_{t+1})$ を得たとき
 $$
-\hat B_\pi V = r_{t + 1} + \gamma V (s_t + 1)
+V(s) = \hat B_\pi V = r_{t + 1} + \gamma V (s_t + 1)
 $$
-で更新する。
+で更新してみよう
 **** TD誤差学習 その2
 $s_{t + 1}$ に関し期待値をとると
 $$
@@ -177,43 +178,49 @@ $$
 V(s_{t+1})|s_t] = B_\pi V
 $$
 - 期待値が逐次代入解に一致したので、うまくいきそう
-- サンプルの偏り(方策による偏り、報酬自体の分散)を考慮し、
+- サンプリングされた値のばらつきを考慮し、
   学習率 $\alpha_t$ を導入して少しずつ学習する
 \begin{aligned}
-V(s_t) \xleftarrow[update]{} & (1- \alpha_t)V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1})\bigr) \\
-=&V(s_t) + \alpha_t \bigl(R_{t+1} + \gamma V(s_{t + 1}) - V(s_t) \bigr) 
+V_\pi (s_t) \xleftarrow[update]{} & (1- \alpha_t)V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma V_\pi (s_{t + 1})\bigr) \\
+=&V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma V_\pi (s_{t + 1}) - V_\pi (s_t) \bigr) 
 \end{aligned}
 - $R_t + \gamma V(s_{t + 1}) - V(s_t)$ をTD誤差(TD error)と呼ぶ
-- 学習係数を適切に減衰させればこれは収束する
+- $\alpha_t$ を適切に減衰させればこれは真の値に収束する
+- オンラインで学習できる
 
 **** SARSA
-- TD誤差学習と同じことを $Q(s, a)$ についてやる
-- 更新式は
+- TD誤差学習と同じことを $Q(s, a)$ についてやる 
+- 状態 $s_t$ で行動 $a_t$ を選択したら、 $s_{t+1}$ に遷移し $R_{t+1}$
+  が得られた。また、今 $a_{t+1}$ を選択するつもりである。
+- このとき、以下のような更新式でオンラインに $Q_\pi$ を更新する
 $$
-\small Q(s_t, a_t)\xleftarrow[update]{} Q(s_t, a_t) + \alpha_t \bigl( R_{t+1} +
-\gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \bigr)
+\small Q_\pi(s_t, a_t)= (1 -\alpha)Q_\pi (s_t, a_t) + \alpha_t \bigl( R_{t+1} +
+\gamma Q_\pi (s_{t+1}, a_{t+1}) \bigr)
 $$
+- 方策 $\pi$ を固定しないと学習できない
 
 **** 方策オン型、方策オフ型 その1
 - モンテカルロ法、TD誤差学習、SARSAは、いずれ「方策を固定した時の価値関数」に収束する
 - 最適方策を決めるには、最適価値関数が必要
-- 後述する仮定をおくと、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる
+- 基本的には、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる
 $$
 \pi_i \xrightarrow[\pi _iで行動し価値関数を更新]{} Q_i \xrightarrow[Q_i に
 基づく貪欲方策]{} \pi _{i+1} ...
 $$
+- $Q(s, a)$ 一番大きいような $a$ を常に選択するのが貪欲方策
+
 **** 方策オン型、方策オフ型 その2
 - ただし、これだと全ての状態 $\mathcal S$ に到達しない場合があるので、
-  ヒューリスティクスを使う
+  実際には何らかの工夫をする
 - 代表的なのは $\epsilon -\rm greedy$ (確率 $\epsilon$ で乱択、 $1-\epsilon$ で貪欲)
-- 目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
-  ぶ
+  - 他にソフトマックス関数(シグモイドの多変量版)を使う方法などがある
+- 目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼ぶ
 - 逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ
 - TD誤差学習、SARSAは方策オン型
-- モンテカルロ法はImportance Sampling等を使うと方策オフ型にできる(説明
-  略)
-- 基本的には方策オフ型の方がいい(効率がいいから)
-
+- モンテカルロ法、TD誤差学習は方策オンで考える方が単純だが、重要度サン
+  プリング等を使うと方策オフ型にできる
+- 基本的には方策オフ型の方がいい(サンプルが再利用できる ex. 体験再生)
+**** (補足) 重要度サンプリング
 **** Q学習
 - TD誤差学習 と同じことを $Q_*(s, a)$ についてやる
 - 逐次代入法とサンプリング版の更新式は
@@ -228,7 +235,7 @@ $$
 \small Q(s, a)  \xleftarrow[update]{} Q(s, a) + \alpha_t \bigl( R_{t+1} +
 \max_{a_{t+1}} \gamma Q(s_{t+1}, a_{t+1}) - Q(s, a) \bigr)
 $$
-
+- これは方策オフ型で学習できる
 **** まとめ
 - 探索しながら価値関数を求めたい
 - マルコフ性を使えるならベルマン方程式をサンプリングによって近似的に解
@@ -241,6 +248,7 @@ $$
   - $Q_*(s, a)$ の計算に対応
 - $V_*(s, a)$ は？
   - 無理
+- 方策オン・オフや最適価値関数に収束させる方法にも注意しよう
   
 *** Multi-Step Bootstrapping
 - TD誤差学習では、タイムステップ一回ぶんのサンプルで学習していた
@@ -530,9 +538,9 @@ $$
 \end{aligned}
 - これを Natural Actor-Criticと呼ぶ
 
-
 *** 深層強化学習
 - お察しのとおり(?)、関数近似した価値関数や方策をニューラルネットで近似する
+- ただし、学習目標の設定やバイアスへの対処など技術的に困難な点は多い
 - 後で詳しくやる
 
 *** 用語
@@ -543,6 +551,7 @@ $$
 - \downarrow マルコフ性を活用して逐次学習する (TD誤差学習)
 - \downarrow メモリが足りないから関数近似する
 - それとは別に方策を直接近似する手法もある
+  - Actor-Criticは価値関数も使うけど……
 みたいな感じ
 
 * 主要な構成要素
