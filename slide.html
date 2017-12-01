@@ -27,27 +27,27 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)</h1><p class="date">Created: 2017-12-01 金 16:30</p>
+<section id="sec-title-slide"><h1 class="title">DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)</h1><p class="date">Created: 2017-12-01 金 17:15</p>
 </section>
 <section id="table-of-contents">
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-org6f75446">1. 概要</a></li>
-<li><a href="#/slide-orgec4b59e">2. まえがき</a></li>
-<li><a href="#/slide-org0658620">3. 背景</a>
+<li><a href="#/slide-orgc140c49">1. 概要</a></li>
+<li><a href="#/slide-org51fa1b4">2. まえがき</a></li>
+<li><a href="#/slide-org33d68c8">3. 背景</a>
 <ul>
-<li><a href="#/slide-org2457280">3.1. 機械学習</a></li>
-<li><a href="#/slide-orge6eedf9">3.2. 深層学習</a></li>
-<li><a href="#/slide-org982f85d">3.3. 強化学習</a></li>
+<li><a href="#/slide-orgd754cee">3.1. 機械学習</a></li>
+<li><a href="#/slide-org82eb9d9">3.2. 深層学習</a></li>
+<li><a href="#/slide-orgd352bbf">3.3. 強化学習</a></li>
 </ul>
 </li>
-<li><a href="#/slide-org6213d07">4. 主要な構成要素</a>
+<li><a href="#/slide-org70ab104">4. 主要な構成要素</a>
 <ul>
-<li><a href="#/slide-orga22486a">4.1. 価値関数を使う手法</a></li>
-<li><a href="#/slide-orged7882a">4.2. 方策を使う方法</a></li>
-<li><a href="#/slide-orgc0e226d">4.3. 報酬を使う(？)方法</a></li>
+<li><a href="#/slide-org5cd5485">4.1. 価値関数を使う手法</a></li>
+<li><a href="#/slide-orgaeea79d">4.2. 方策を使う方法</a></li>
+<li><a href="#/slide-orge69b790">4.3. 報酬を使う(？)方法</a></li>
 </ul>
 </li>
 </ul>
@@ -55,8 +55,8 @@
 </div>
 </section>
 <section>
-<section id="slide-org6f75446">
-<h2 id="org6f75446"><span class="section-number-2">1</span> 概要</h2>
+<section id="slide-orgc140c49">
+<h2 id="orgc140c49"><span class="section-number-2">1</span> 概要</h2>
 <ul>
 <li><a href="https://arxiv.org/abs/1701.07274">https://arxiv.org/abs/1701.07274</a> の1~3章の紹介</li>
 <li>参考にしたもの
@@ -80,8 +80,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orgec4b59e">
-<h2 id="orgec4b59e"><span class="section-number-2">2</span> まえがき</h2>
+<section id="slide-org51fa1b4">
+<h2 id="org51fa1b4"><span class="section-number-2">2</span> まえがき</h2>
 <ul>
 <li>深層強化学習の隆盛(AlphaGoとか)
 <ul>
@@ -96,8 +96,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org0658620">
-<h2 id="org0658620"><span class="section-number-2">3</span> 背景</h2>
+<section id="slide-org33d68c8">
+<h2 id="org33d68c8"><span class="section-number-2">3</span> 背景</h2>
 <p>
 機械学習、深層学習、強化学習
 </p>
@@ -105,15 +105,15 @@
 </section>
 </section>
 <section>
-<section id="slide-org2457280">
-<h3 id="org2457280"><span class="section-number-3">3.1</span> 機械学習</h3>
+<section id="slide-orgd754cee">
+<h3 id="orgd754cee"><span class="section-number-3">3.1</span> 機械学習</h3>
 <div class="outline-text-3" id="text-3-1">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org086a8ec">
-<h4 id="org086a8ec"><span class="section-number-4">3.1.1</span> 教師あり学習・教師なし学習</h4>
+<section id="slide-org9e8d6a4">
+<h4 id="org9e8d6a4"><span class="section-number-4">3.1.1</span> 教師あり学習・教師なし学習</h4>
 <p>
 データから関数を学習する(<a href="./drl1.pdf">図</a>)
 </p>
@@ -141,8 +141,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orge6eedf9">
-<h3 id="orge6eedf9"><span class="section-number-3">3.2</span> 深層学習</h3>
+<section id="slide-org82eb9d9">
+<h3 id="org82eb9d9"><span class="section-number-3">3.2</span> 深層学習</h3>
 <ul>
 <li>関数近似器として多層パーセプトロンモデルを使用した教師つき・教師なし
 学習の手法</li>
@@ -152,8 +152,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org982f85d">
-<h3 id="org982f85d"><span class="section-number-3">3.3</span> 強化学習</h3>
+<section id="slide-orgd352bbf">
+<h3 id="orgd352bbf"><span class="section-number-3">3.3</span> 強化学習</h3>
 <p>
 よくわからない状況で、様子を見ながら行動する
 <img src="./drl2.png" alt="drl2.png" />
@@ -162,8 +162,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org679d1f8">
-<h4 id="org679d1f8"><span class="section-number-4">3.3.1</span> 定式化と用語</h4>
+<section id="slide-orgff103a7">
+<h4 id="orgff103a7"><span class="section-number-4">3.3.1</span> 定式化と用語</h4>
 <ul>
 <li>エージェント(Agent): 行動主体</li>
 <li>エピソード(Episode): 一連の動作(囲碁一試合ぶん等)</li>
@@ -189,8 +189,8 @@
 
 </ul>
 </section>
-<section id="slide-orgfd25cf9">
-<h5 id="orgfd25cf9"><span class="section-number-5">3.3.1.1</span> 定式化と用語 その2</h5>
+<section id="slide-orge280e45">
+<h5 id="orge280e45"><span class="section-number-5">3.3.1.1</span> 定式化と用語 その2</h5>
 <ul>
 <li>エージェントに学習させるもの
 <ul>
@@ -221,8 +221,8 @@
 </section>
 </section>
 <section>
-<section id="slide-orgbb1faa4">
-<h4 id="orgbb1faa4"><span class="section-number-4">3.3.2</span> 価値関数</h4>
+<section id="slide-orgbb6df0f">
+<h4 id="orgbb6df0f"><span class="section-number-4">3.3.2</span> 価値関数</h4>
 <p>
 最適な方策の基準として、状態と行動に価値を設定する。
 </p>
@@ -244,8 +244,8 @@
 </ul>
 
 </section>
-<section id="slide-org950663c">
-<h5 id="org950663c"><span class="section-number-5">3.3.2.1</span> 相互作用の最も単純なモデル化: マルコフ決定過程(MDP)</h5>
+<section id="slide-orgd15e57e">
+<h5 id="orgd15e57e"><span class="section-number-5">3.3.2.1</span> 相互作用の最も単純なモデル化: マルコフ決定過程(MDP)</h5>
 <p>
 Rewardが、1つ前のタイム・ステップの状態・行動のみに依存し、2つ以上前に
 は依存しないとすると、報酬関数rは \[R_{t + 1} = r(S_t, A_t, S_{t+1})\] と書け
@@ -262,8 +262,8 @@ Rewardが、1つ前のタイム・ステップの状態・行動のみに依存�
 </ul>
 
 </section>
-<section id="slide-org8cca0bb">
-<h5 id="org8cca0bb"><span class="section-number-5">3.3.2.2</span> ベルマン方程式 その1</h5>
+<section id="slide-orge8c044c">
+<h5 id="orge8c044c"><span class="section-number-5">3.3.2.2</span> ベルマン方程式 その1</h5>
 <ul>
 <li>遷移確率関数と報酬関数がわかれば、探索しなくても価値関数がわかる</li>
 
@@ -283,8 +283,8 @@ S} P(s'|s, a) \mathbb E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] \\
 
 </div>
 </section>
-<section id="slide-orgbd926d9">
-<h5 id="orgbd926d9"><span class="section-number-5">3.3.2.3</span> ベルマン方程式 その2</h5>
+<section id="slide-org653d089">
+<h5 id="org653d089"><span class="section-number-5">3.3.2.3</span> ベルマン方程式 その2</h5>
 <p>
 ここで、\(\small E_\pi [R _{t+2} + \gamma R _{t+3} + ...| S_{t+1} = s'] =
 V_\pi(s')\) より
@@ -307,8 +307,8 @@ V_\pi(s')\) より
 </div>
 
 </section>
-<section id="slide-org4c77d1e">
-<h5 id="org4c77d1e"><span class="section-number-5">3.3.2.4</span> ベルマン最適方程式</h5>
+<section id="slide-orgfe70b18">
+<h5 id="orgfe70b18"><span class="section-number-5">3.3.2.4</span> ベルマン最適方程式</h5>
 <div>
 \begin{aligned}
 \small V_* (s) & \small = \max _\pi V_\pi(s) ~~ \forall s \in \mathcal S \\
@@ -329,8 +329,8 @@ V_\pi(s')\) より
 </ul>
 
 </section>
-<section id="slide-orgba6dc54">
-<h5 id="orgba6dc54"><span class="section-number-5">3.3.2.5</span> ベルマン方程式の解法 その1</h5>
+<section id="slide-org245a297">
+<h5 id="org245a297"><span class="section-number-5">3.3.2.5</span> ベルマン方程式の解法 その1</h5>
 <ul>
 <li>ベルマン方程式やベルマン最適方程式は解けるの？
 <ul>
@@ -351,8 +351,8 @@ V _\pi(s) \xleftarrow[update]{} \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' 
 
 </div>
 </section>
-<section id="slide-orgb00b10a">
-<h5 id="orgb00b10a"><span class="section-number-5">3.3.2.6</span> ベルマン方程式の解法 その2</h5>
+<section id="slide-org3072e2b">
+<h5 id="org3072e2b"><span class="section-number-5">3.3.2.6</span> ベルマン方程式の解法 その2</h5>
 <ul>
 <li>\(Q, V _* , Q _*\) についても同様に解ける</li>
 <li>更新操作を作用素 \(B^\pi\) でおく( \(V' \leftarrow B^\pi V\) )と \(B^\pi\) が \(V\) の上
@@ -363,8 +363,8 @@ V _\pi(s) \xleftarrow[update]{} \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' 
 </section>
 </section>
 <section>
-<section id="slide-org8a0d8a7">
-<h4 id="org8a0d8a7"><span class="section-number-4">3.3.3</span> 価値反復アルゴリズム</h4>
+<section id="slide-org2033e4d">
+<h4 id="org2033e4d"><span class="section-number-4">3.3.3</span> 価値反復アルゴリズム</h4>
 <ul>
 <li>マルコフ性を仮定した上で、遷移確率\(P(s_{t+1}|s_t, a_t)\) および報酬関
 数 \(r(S_t, A_t, S_{t+1})\) がわかれば、ベルマン最適方程式により最適方
@@ -374,8 +374,8 @@ V _\pi(s) \xleftarrow[update]{} \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' 
 
 </ul>
 </section>
-<section id="slide-org8fa676d">
-<h5 id="org8fa676d"><span class="section-number-5">3.3.3.1</span> モンテカルロ法</h5>
+<section id="slide-org650e1e1">
+<h5 id="org650e1e1"><span class="section-number-5">3.3.3.1</span> モンテカルロ法</h5>
 <p>
 適当な方策で行動し、1エピソードぶん終わったあと
 </p>
@@ -396,8 +396,8 @@ V _{aftter}(s) &= V _{before} (s) + \eta \bigl( G(t) - V_i (s) \bigr) \\
 
 </ul>
 </section>
-<section id="slide-org030e284">
-<h5 id="org030e284"><span class="section-number-5">3.3.3.2</span> TD誤差学習 その1</h5>
+<section id="slide-org3f75633">
+<h5 id="org3f75633"><span class="section-number-5">3.3.3.2</span> TD誤差学習 その1</h5>
 <ul>
 <li>マルコフ性を使おう!</li>
 <li>ベルマン方程式の逐次代入解法では以下のように解いた</li>
@@ -421,8 +421,8 @@ V(s) = \hat B_\pi V = r_{t + 1} + \gamma V (s_t + 1)
 で更新してみよう
 </p>
 </section>
-<section id="slide-org32fd183">
-<h5 id="org32fd183"><span class="section-number-5">3.3.3.3</span> TD誤差学習 その2</h5>
+<section id="slide-org8c2a6e3">
+<h5 id="org8c2a6e3"><span class="section-number-5">3.3.3.3</span> TD誤差学習 その2</h5>
 <p>
 \(s_{t + 1}\) に関し期待値をとると
 \[
@@ -451,8 +451,8 @@ V_\pi (s_t) \xleftarrow[update]{} & (1- \alpha_t)V_\pi (s_t) + \alpha_t \bigl(R_
 </ul>
 
 </section>
-<section id="slide-org2be0f6c">
-<h5 id="org2be0f6c"><span class="section-number-5">3.3.3.4</span> SARSA</h5>
+<section id="slide-org56d1643">
+<h5 id="org56d1643"><span class="section-number-5">3.3.3.4</span> SARSA</h5>
 <ul>
 <li>TD誤差学習と同じことを \(Q(s, a)\) についてやる</li>
 <li>状態 \(s_t\) で行動 \(a_t\) を選択したら、 \(s_{t+1}\) に遷移し \(R_{t+1}\)
@@ -472,12 +472,12 @@ V_\pi (s_t) \xleftarrow[update]{} & (1- \alpha_t)V_\pi (s_t) + \alpha_t \bigl(R_
 </ul>
 
 </section>
-<section id="slide-org63022f5">
-<h5 id="org63022f5"><span class="section-number-5">3.3.3.5</span> 方策オン型、方策オフ型 その1</h5>
+<section id="slide-orgf5f3e3a">
+<h5 id="orgf5f3e3a"><span class="section-number-5">3.3.3.5</span> 方策オン型、方策オフ型 その1</h5>
 <ul>
 <li>モンテカルロ法、TD誤差学習、SARSAは、いずれ「方策を固定した時の価値関数」に収束する</li>
 <li>最適方策を決めるには、最適価値関数が必要</li>
-<li>後述する仮定をおくと、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる</li>
+<li>基本的には、以下のように方策と価値関数を交互に更新することで最適価値関数が求められる</li>
 
 </ul>
 <p>
@@ -486,26 +486,36 @@ V_\pi (s_t) \xleftarrow[update]{} & (1- \alpha_t)V_\pi (s_t) + \alpha_t \bigl(R_
 基づく貪欲方策]{} \pi _{i+1} ...
 \]
 </p>
-</section>
-<section id="slide-orge902cac">
-<h5 id="orge902cac"><span class="section-number-5">3.3.3.6</span> 方策オン型、方策オフ型 その2</h5>
 <ul>
-<li>ただし、これだと全ての状態 \(\mathcal S\) に到達しない場合があるので、
-ヒューリスティクスを使う</li>
-<li>代表的なのは \(\epsilon -\rm greedy\) (確率 \(\epsilon\) で乱択、 \(1-\epsilon\) で貪欲)</li>
-<li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
-ぶ</li>
-<li>逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ</li>
-<li>TD誤差学習、SARSAは方策オン型</li>
-<li>モンテカルロ法はImportance Sampling等を使うと方策オフ型にできる(説明
-略)</li>
-<li>基本的には方策オフ型の方がいい(効率がいいから)</li>
+<li>\(Q(s, a)\) 一番大きいような \(a\) を常に選択するのが貪欲方策</li>
 
 </ul>
 
 </section>
-<section id="slide-orgb27aff9">
-<h5 id="orgb27aff9"><span class="section-number-5">3.3.3.7</span> Q学習</h5>
+<section id="slide-org75f1ef9">
+<h5 id="org75f1ef9"><span class="section-number-5">3.3.3.6</span> 方策オン型、方策オフ型 その2</h5>
+<ul>
+<li>ただし、これだと全ての状態 \(\mathcal S\) に到達しない場合があるので、
+実際には何らかの工夫をする</li>
+<li>代表的なのは \(\epsilon -\rm greedy\) (確率 \(\epsilon\) で乱択、 \(1-\epsilon\) で貪欲)
+<ul>
+<li>他にソフトマックス関数(シグモイドの多変量版)を使う方法などがある</li>
+
+</ul></li>
+<li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼ぶ</li>
+<li>逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ</li>
+<li>TD誤差学習、SARSAは方策オン型</li>
+<li>モンテカルロ法、TD誤差学習は方策オンで考える方が単純だが、重要度サン
+プリング等を使うと方策オフ型にできる</li>
+<li>基本的には方策オフ型の方がいい(サンプルが再利用できる ex. 体験再生)</li>
+
+</ul>
+</section>
+<section id="slide-orge7424ce">
+<h5 id="orge7424ce"><span class="section-number-5">3.3.3.7</span> (補足) 重要度サンプリング</h5>
+</section>
+<section id="slide-org6058330">
+<h5 id="org6058330"><span class="section-number-5">3.3.3.8</span> Q学習</h5>
 <ul>
 <li>TD誤差学習 と同じことを \(Q_*(s, a)\) についてやる</li>
 <li>逐次代入法とサンプリング版の更新式は</li>
@@ -530,10 +540,13 @@ Q(s_{t+1}, a_{t+1})
 \max_{a_{t+1}} \gamma Q(s_{t+1}, a_{t+1}) - Q(s, a) \bigr)
 \]
 </p>
+<ul>
+<li>これは方策オフ型で学習できる</li>
 
+</ul>
 </section>
-<section id="slide-org8bebfd7">
-<h5 id="org8bebfd7"><span class="section-number-5">3.3.3.8</span> まとめ</h5>
+<section id="slide-org69b7791">
+<h5 id="org69b7791"><span class="section-number-5">3.3.3.9</span> まとめ</h5>
 <ul>
 <li>探索しながら価値関数を求めたい</li>
 <li>マルコフ性を使えるならベルマン方程式をサンプリングによって近似的に解
@@ -558,14 +571,15 @@ Q(s_{t+1}, a_{t+1})
 <li>無理</li>
 
 </ul></li>
+<li>方策オン・オフや最適価値関数に収束させる方法にも注意しよう</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-org8a27ecd">
-<h4 id="org8a27ecd"><span class="section-number-4">3.3.4</span> Multi-Step Bootstrapping</h4>
+<section id="slide-orgc6a5f79">
+<h4 id="orgc6a5f79"><span class="section-number-4">3.3.4</span> Multi-Step Bootstrapping</h4>
 <ul>
 <li>TD誤差学習では、タイムステップ一回ぶんのサンプルで学習していた</li>
 
@@ -594,8 +608,8 @@ V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
 </ul>
 
 </section>
-<section id="slide-org01443bf">
-<h5 id="org01443bf"><span class="section-number-5">3.3.4.1</span> 適格度トレーシング</h5>
+<section id="slide-orgebfbdf7">
+<h5 id="orgebfbdf7"><span class="section-number-5">3.3.4.1</span> 適格度トレーシング</h5>
 <ul>
 <li>よくわからなかった</li>
 <li>\(\frac{n}{T}=\lambda\) なる \(\lambda\) を用いて、マルチステップ版のこ
@@ -606,8 +620,8 @@ V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orgcdc7a69">
-<h4 id="orgcdc7a69"><span class="section-number-4">3.3.5</span> (価値関数法に対する)関数近似法</h4>
+<section id="slide-org95c7020">
+<h4 id="org95c7020"><span class="section-number-4">3.3.5</span> (価値関数法に対する)関数近似法</h4>
 <ul>
 <li>今までの方法はテーブル表現されたものだった
 <ul>
@@ -623,8 +637,8 @@ V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
 </ul>
 
 </section>
-<section id="slide-org6e4c198">
-<h5 id="org6e4c198"><span class="section-number-5">3.3.5.1</span> 直接法 TD誤差学習</h5>
+<section id="slide-org44295ae">
+<h5 id="org44295ae"><span class="section-number-5">3.3.5.1</span> 直接法 TD誤差学習</h5>
 <ul>
 <li>テーブル表現された状態価値関数 \(V(s) \forall s \in \mathcal S\) を関
 数\(\hat V (s|\theta)\) で近似し、次のように更新する</li>
@@ -650,8 +664,8 @@ V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
 </p>
 
 </section>
-<section id="slide-orgbb95dbe">
-<h5 id="orgbb95dbe"><span class="section-number-5">3.3.5.2</span> 直接法 その他</h5>
+<section id="slide-org72279f2">
+<h5 id="org72279f2"><span class="section-number-5">3.3.5.2</span> 直接法 その他</h5>
 <ul>
 <li>一方、非線形な関数近似器の場合は方策オン型にしないと収束が保証されな
 い</li>
@@ -673,8 +687,8 @@ V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
 </ul>
 
 </section>
-<section id="slide-orga1cb0cf">
-<h5 id="orga1cb0cf"><span class="section-number-5">3.3.5.3</span> 勾配TD法</h5>
+<section id="slide-org2e9fd0f">
+<h5 id="org2e9fd0f"><span class="section-number-5">3.3.5.3</span> 勾配TD法</h5>
 <p>
 関数近似によるTD法の停留点は
 \[
@@ -697,8 +711,8 @@ V_\pi(s_t|\theta)]\biggr) ^2
 
 </ul>
 </section>
-<section id="slide-org4a5147d">
-<h5 id="org4a5147d"><span class="section-number-5">3.3.5.4</span> 最小二乗TD誤差法 (LSTD) その1</h5>
+<section id="slide-org906d0d9">
+<h5 id="org906d0d9"><span class="section-number-5">3.3.5.4</span> 最小二乗TD誤差法 (LSTD) その1</h5>
 <ul>
 <li>TD誤差二乗を最小化するのはどうか？
 <ul>
@@ -718,8 +732,8 @@ J_{TD}(\theta) &= \mathbb E \mu[\mathbb E_\pi[\epsilon _{t+1}^2|s_t]] \\
 
 </div>
 </section>
-<section id="slide-org7f0d55f">
-<h5 id="org7f0d55f"><span class="section-number-5">3.3.5.5</span> LSTD その2</h5>
+<section id="slide-org6801949">
+<h5 id="org6801949"><span class="section-number-5">3.3.5.5</span> LSTD その2</h5>
 <p>
 \(\hat V_\pi (s_t |\theta_t) = \theta^T \phi_t\) とおくと
 \[
@@ -734,8 +748,8 @@ J_{TD}(\theta) &= \mathbb E \mu[\mathbb E_\pi[\epsilon _{t+1}^2|s_t]] \\
 
 </ul>
 </section>
-<section id="slide-org2bb6dd0">
-<h5 id="org2bb6dd0"><span class="section-number-5">3.3.5.6</span> LSTD その3</h5>
+<section id="slide-org99bd00c">
+<h5 id="org99bd00c"><span class="section-number-5">3.3.5.6</span> LSTD その3</h5>
 <ul>
 <li>\(w_t\) として \(\phi_t\) を用いると</li>
 
@@ -750,8 +764,8 @@ J_{TD}(\theta) &= \mathbb E \mu[\mathbb E_\pi[\epsilon _{t+1}^2|s_t]] \\
 </p>
 
 </section>
-<section id="slide-org306ad30">
-<h5 id="org306ad30"><span class="section-number-5">3.3.5.7</span> GTD2, TDC その1</h5>
+<section id="slide-org89a857e">
+<h5 id="org89a857e"><span class="section-number-5">3.3.5.7</span> GTD2, TDC その1</h5>
 <ul>
 <li>(勾配を使って効率を良くしたい)</li>
 
@@ -780,8 +794,8 @@ C_{PB} (\theta) &= \mathbb E _\mu [(\hat V_\pi (s_t|\theta) - \Pi B_\pi \hat V_\
 \(C_{PB}\) の最小化はTD誤差二乗の最小化と等価
 </p>
 </section>
-<section id="slide-org473eee7">
-<h5 id="org473eee7"><span class="section-number-5">3.3.5.8</span> GTD2, TDC その2</h5>
+<section id="slide-org4db9ca3">
+<h5 id="org4db9ca3"><span class="section-number-5">3.3.5.8</span> GTD2, TDC その2</h5>
 <ul>
 <li>この \(C _{PB}\) を目的関数 \(J\) とすると</li>
 
@@ -804,8 +818,8 @@ J_{PB}(\theta) = \mathbb E[\epsilon _{t+1}\phi_t]^T \mathbb E[\phi_t \phi_t ^T]^
 </div>
 
 </section>
-<section id="slide-org5fd71bf">
-<h5 id="org5fd71bf"><span class="section-number-5">3.3.5.9</span> GTD2, TDC その3</h5>
+<section id="slide-org9b5f065">
+<h5 id="org9b5f065"><span class="section-number-5">3.3.5.9</span> GTD2, TDC その3</h5>
 <ul>
 <li>\(w\) は以下の二乗誤差を最小化する解として解釈できる</li>
 
@@ -833,8 +847,8 @@ w _{t+1} = w_t - \beta _t \phi_t (\phi_t ^T w_t - \epsilon _{t+1}) (\therefore �
 </ul>
 
 </section>
-<section id="slide-orga67a5e9">
-<h5 id="orga67a5e9"><span class="section-number-5">3.3.5.10</span> LSPE その1</h5>
+<section id="slide-org509b980">
+<h5 id="org509b980"><span class="section-number-5">3.3.5.10</span> LSPE その1</h5>
 <p>
 \(J_{PB}\) の min を目的関数にする
 \[
@@ -851,8 +865,8 @@ w' - B_\pi (\phi_t^T\theta))^2]
 \]
 </p>
 </section>
-<section id="slide-org2b03ae0">
-<h5 id="org2b03ae0"><span class="section-number-5">3.3.5.11</span> LSPE その2</h5>
+<section id="slide-orgdf88a52">
+<h5 id="orgdf88a52"><span class="section-number-5">3.3.5.11</span> LSPE その2</h5>
 <p>
 \(\theta\) を逐次代入で、 \(w\)
 をバッチ型で解析的に解くと、以下の更新式が得られる
@@ -867,8 +881,8 @@ w _{t+1} = - \mathbb E [\phi _t \phi_t^T]^{-1} (A _{TD} \theta _{t+1} - b_{TD})
 </ul>
 
 </section>
-<section id="slide-org8998e98">
-<h5 id="org8998e98"><span class="section-number-5">3.3.5.12</span> LSPI, GQ</h5>
+<section id="slide-org0c47429">
+<h5 id="org0c47429"><span class="section-number-5">3.3.5.12</span> LSPI, GQ</h5>
 <ul>
 <li>LSTD, GTDと同じ操作を Qについてやる</li>
 <li>略</li>
@@ -876,8 +890,8 @@ w _{t+1} = - \mathbb E [\phi _t \phi_t^T]^{-1} (A _{TD} \theta _{t+1} - b_{TD})
 </ul>
 
 </section>
-<section id="slide-orge9e8be0">
-<h5 id="orge9e8be0"><span class="section-number-5">3.3.5.13</span> fitted Q その1</h5>
+<section id="slide-orgc14148d">
+<h5 id="orgc14148d"><span class="section-number-5">3.3.5.13</span> fitted Q その1</h5>
 <ul>
 <li>LSPEと同じ操作を Qについてやる まず目的関数は以下のようになる</li>
 
@@ -904,8 +918,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </p>
 
 </section>
-<section id="slide-orga970468">
-<h5 id="orga970468"><span class="section-number-5">3.3.5.14</span> fitted Q その2</h5>
+<section id="slide-orgd2e7f25">
+<h5 id="orgd2e7f25"><span class="section-number-5">3.3.5.14</span> fitted Q その2</h5>
 <ul>
 <li>\(w\) が教師出力、\(\hat Q(s_t, a_t | \theta)\) が教師出力を近似するパラ
 メータ \(\theta\) を持つ 入力 \((s_t, a_t)\) の関数近似器</li>
@@ -914,8 +928,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 
 </ul>
 </section>
-<section id="slide-org172aa3a">
-<h5 id="org172aa3a"><span class="section-number-5">3.3.5.15</span> 補足 方策オン・オフ</h5>
+<section id="slide-org98b3104">
+<h5 id="org98b3104"><span class="section-number-5">3.3.5.15</span> 補足 方策オン・オフ</h5>
 <ul>
 <li>関数近似しない場合と同様にQ<sub>*</sub> 派生は方策オフで学習できるし、Q<sub>&pi;</sub> 派生
 のものは方策オンにしないと無理</li>
@@ -926,8 +940,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </section>
 </section>
 <section>
-<section id="slide-org2fe2f73">
-<h4 id="org2fe2f73"><span class="section-number-4">3.3.6</span> 方策勾配を使う方法</h4>
+<section id="slide-org871f663">
+<h4 id="org871f663"><span class="section-number-4">3.3.6</span> 方策勾配を使う方法</h4>
 <ul>
 <li>主に、行動が連続値である場合(制御とか)に用いられる手法</li>
 <li>行動価値関数を使用せず、直接方策を求める</li>
@@ -945,8 +959,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </p>
 
 </section>
-<section id="slide-orgcb19c20">
-<h5 id="orgcb19c20"><span class="section-number-5">3.3.6.1</span> 方策 \(\pi _\theta\) の更新</h5>
+<section id="slide-org310f1cc">
+<h5 id="org310f1cc"><span class="section-number-5">3.3.6.1</span> 方策 \(\pi _\theta\) の更新</h5>
 <p>
 \[
 \theta^{t+1} = \theta^t + \eta \nabla_\theta J(\theta)
@@ -968,8 +982,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </div>
 
 </section>
-<section id="slide-orgc05e326">
-<h5 id="orgc05e326"><span class="section-number-5">3.3.6.2</span> REINFORCEMENT</h5>
+<section id="slide-org411222e">
+<h5 id="org411222e"><span class="section-number-5">3.3.6.2</span> REINFORCEMENT</h5>
 <ul>
 <li>この式をサンプルを使って近似する</li>
 
@@ -997,8 +1011,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </p>
 
 </section>
-<section id="slide-orgfa6f29f">
-<h5 id="orgfa6f29f"><span class="section-number-5">3.3.6.3</span> REINFORCEMRNT wirh Baseline</h5>
+<section id="slide-org6ba56c8">
+<h5 id="org6ba56c8"><span class="section-number-5">3.3.6.3</span> REINFORCEMRNT wirh Baseline</h5>
 <ul>
 <li>行動に依存しないベースライン \(b\) を
 勾配の期待値の式にいれても、期待値は変わらない</li>
@@ -1030,8 +1044,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </ul>
 
 </section>
-<section id="slide-org3393151">
-<h5 id="org3393151"><span class="section-number-5">3.3.6.4</span> Actor-Critic その1</h5>
+<section id="slide-org893e89a">
+<h5 id="org893e89a"><span class="section-number-5">3.3.6.4</span> Actor-Critic その1</h5>
 <ul>
 <li>REINFORCEMENTは結局モンテカルロ法で近似しているだけなので、遅い</li>
 <li>行動に依存しないベースライン \(b\) に行動価値関数を使って、期待値を計
@@ -1056,8 +1070,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 
 </ul>
 </section>
-<section id="slide-orgf086b1e">
-<h5 id="orgf086b1e"><span class="section-number-5">3.3.6.5</span> Actor-Critic その2</h5>
+<section id="slide-org35bb95e">
+<h5 id="org35bb95e"><span class="section-number-5">3.3.6.5</span> Actor-Critic その2</h5>
 <ul>
 <li>Criticにあたる \(V_\pi\) の値はサンプリングした値をもとに適当に近似した \(\hat V\pi\) を使う</li>
 <li>実際の学習の流れ
@@ -1073,8 +1087,8 @@ w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
 </ul>
 
 </section>
-<section id="slide-orgf95aafb">
-<h5 id="orgf95aafb"><span class="section-number-5">3.3.6.6</span> Actor-Critic 補足</h5>
+<section id="slide-org1f7bb4e">
+<h5 id="org1f7bb4e"><span class="section-number-5">3.3.6.6</span> Actor-Critic 補足</h5>
 <p>
 アドバンテージ関数を線形モデル
 \[
@@ -1105,14 +1119,14 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 
 </ul>
 
-
 </section>
 </section>
 <section>
-<section id="slide-org9abf94b">
-<h4 id="org9abf94b"><span class="section-number-4">3.3.7</span> 深層強化学習</h4>
+<section id="slide-orgd4f7ba5">
+<h4 id="orgd4f7ba5"><span class="section-number-4">3.3.7</span> 深層強化学習</h4>
 <ul>
 <li>お察しのとおり(?)、関数近似した価値関数や方策をニューラルネットで近似する</li>
+<li>ただし、学習目標の設定やバイアスへの対処など技術的に困難な点は多い</li>
 <li>後で詳しくやる</li>
 
 </ul>
@@ -1120,8 +1134,8 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 </section>
 </section>
 <section>
-<section id="slide-orgca8401f">
-<h4 id="orgca8401f"><span class="section-number-4">3.3.8</span> 用語</h4>
+<section id="slide-org79fd8cd">
+<h4 id="org79fd8cd"><span class="section-number-4">3.3.8</span> 用語</h4>
 <ul>
 <li>スキップします</li>
 
@@ -1129,8 +1143,8 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 </section>
 </section>
 <section>
-<section id="slide-orgda07e51">
-<h4 id="orgda07e51"><span class="section-number-4">3.3.9</span> 強化学習のまとめ</h4>
+<section id="slide-orgb653266">
+<h4 id="orgb653266"><span class="section-number-4">3.3.9</span> 強化学習のまとめ</h4>
 <p>
 雑に言うと
 </p>
@@ -1138,7 +1152,11 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 <li>適当に探索して平均をとる(モンテカルロ法)</li>
 <li>&darr; マルコフ性を活用して逐次学習する (TD誤差学習)</li>
 <li>&darr; メモリが足りないから関数近似する</li>
-<li>それとは別に方策を直接近似する手法もある</li>
+<li>それとは別に方策を直接近似する手法もある
+<ul>
+<li>Actor-Criticは価値関数も使うけど……</li>
+
+</ul></li>
 
 </ul>
 <p>
@@ -1148,8 +1166,8 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 </section>
 </section>
 <section>
-<section id="slide-org6213d07">
-<h2 id="org6213d07"><span class="section-number-2">4</span> 主要な構成要素</h2>
+<section id="slide-org70ab104">
+<h2 id="org70ab104"><span class="section-number-2">4</span> 主要な構成要素</h2>
 <ul>
 <li>深層強化学習のアルゴリズムが色々紹介されている</li>
 
@@ -1157,15 +1175,15 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 </section>
 </section>
 <section>
-<section id="slide-orga22486a">
-<h3 id="orga22486a"><span class="section-number-3">4.1</span> 価値関数を使う手法</h3>
+<section id="slide-org5cd5485">
+<h3 id="org5cd5485"><span class="section-number-3">4.1</span> 価値関数を使う手法</h3>
 <div class="outline-text-3" id="text-4-1">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org47ee5cc">
-<h4 id="org47ee5cc"><span class="section-number-4">4.1.1</span> Deep Q Network</h4>
+<section id="slide-orgb98ebd3">
+<h4 id="orgb98ebd3"><span class="section-number-4">4.1.1</span> Deep Q Network</h4>
 <ul>
 <li>ご存知DeepMindが2013年にNIPSで、2015年にNatureで発表</li>
 <li><a href="https://www.nature.com/articles/nature14236">Nature版のリンク</a></li>
@@ -1174,8 +1192,8 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 
 </ul>
 </section>
-<section id="slide-orgcf467a3">
-<h5 id="orgcf467a3"><span class="section-number-5">4.1.1.1</span> DQNの全体像</h5>
+<section id="slide-orgbe8403a">
+<h5 id="orgbe8403a"><span class="section-number-5">4.1.1.1</span> DQNの全体像</h5>
 <p>
 <a href="file:///home/mio_h/Dropbox/nature14236-f1.jpeg">Nature版の図</a>
 </p>
@@ -1201,8 +1219,8 @@ A_\pi (s, a) = w ^{\rm T} \nabla_\theta \log \pi_\theta (a|s)
 </section>
 </section>
 <section>
-<section id="slide-org4d5f503">
-<h4 id="org4d5f503"><span class="section-number-4">4.1.2</span> Double Q Learning</h4>
+<section id="slide-org468ed9c">
+<h4 id="org468ed9c"><span class="section-number-4">4.1.2</span> Double Q Learning</h4>
 <ul>
 <li>これもDeepMind(<a href="https://arxiv.org/abs/1509.06461">https://arxiv.org/abs/1509.06461</a>)</li>
 <li>そもそもQ学習はmaxをとるので、外れ値の影響が出やすい</li>
@@ -1224,8 +1242,8 @@ E_ \epsilon [\hat Q(s, a_ {learned})] \geq  Q_* (s, a_ {opt})
 </p>
 
 </section>
-<section id="slide-orgbf6bf16">
-<h5 id="orgbf6bf16"><span class="section-number-5">4.1.2.1</span> Double Q Learning その2</h5>
+<section id="slide-org3cbf417">
+<h5 id="org3cbf417"><span class="section-number-5">4.1.2.1</span> Double Q Learning その2</h5>
 <ul>
 <li>バイアスに対処するために、関数近似器を二つ用意して、ランダムに以下の2種類のどちらかの更新を行う</li>
 
@@ -1245,8 +1263,8 @@ E_ \epsilon [\hat Q(s, a_ {learned})] \geq  Q_* (s, a_ {opt})
 </section>
 </section>
 <section>
-<section id="slide-orgd64a28a">
-<h4 id="orgd64a28a"><span class="section-number-4">4.1.3</span> 優先順位つき体験再生</h4>
+<section id="slide-orgf6747ea">
+<h4 id="orgf6747ea"><span class="section-number-4">4.1.3</span> 優先順位つき体験再生</h4>
 <ul>
 <li>これもDeepMind(<a href="https://arxiv.org/abs/1511.05952">https://arxiv.org/abs/1511.05952</a>)</li>
 
@@ -1269,8 +1287,8 @@ P(i) = \frac{p_i ^\alpha}{\sum_k p_k ^\alpha}
 </section>
 </section>
 <section>
-<section id="slide-org3565434">
-<h4 id="org3565434"><span class="section-number-4">4.1.4</span> Dueling Architecture</h4>
+<section id="slide-org187d2fa">
+<h4 id="org187d2fa"><span class="section-number-4">4.1.4</span> Dueling Architecture</h4>
 <ul>
 <li>これもDeepMind(<a href="https://arxiv.org/abs/1511.06581">https://arxiv.org/abs/1511.06581</a>)(えぇ..)</li>
 <li>図は論文で&#x2026;</li>
@@ -1299,23 +1317,23 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 </section>
 </section>
 <section>
-<section id="slide-org010ee8e">
-<h4 id="org010ee8e"><span class="section-number-4">4.1.5</span> その他のDQNの拡張</h4>
+<section id="slide-orgd40791f">
+<h4 id="orgd40791f"><span class="section-number-4">4.1.5</span> その他のDQNの拡張</h4>
 <p>
 後で追加します
 </p>
 </section>
 </section>
 <section>
-<section id="slide-orged7882a">
-<h3 id="orged7882a"><span class="section-number-3">4.2</span> 方策を使う方法</h3>
+<section id="slide-orgaeea79d">
+<h3 id="orgaeea79d"><span class="section-number-3">4.2</span> 方策を使う方法</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-org006907c">
-<h4 id="org006907c"><span class="section-number-4">4.2.1</span> A3C</h4>
+<section id="slide-orge125c5e">
+<h4 id="orge125c5e"><span class="section-number-4">4.2.1</span> A3C</h4>
 <ul>
 <li>非同期アドバンテージ推定型Actor-Critic</li>
 <li>これもDeepMind(<a href="https://arxiv.org/abs/1602.01783">https://arxiv.org/abs/1602.01783</a>)</li>
@@ -1323,8 +1341,8 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 </ul>
 
 </section>
-<section id="slide-org15551a3">
-<h5 id="org15551a3"><span class="section-number-5">4.2.1.1</span> A3C その1</h5>
+<section id="slide-org74b10fe">
+<h5 id="org74b10fe"><span class="section-number-5">4.2.1.1</span> A3C その1</h5>
 <ul>
 <li>復習 Actor-Critic
 <ul>
@@ -1338,8 +1356,8 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 
 </ul>
 </section>
-<section id="slide-org906b6c1">
-<h5 id="org906b6c1"><span class="section-number-5">4.2.1.2</span> A3C その2</h5>
+<section id="slide-orge027c19">
+<h5 id="orge027c19"><span class="section-number-5">4.2.1.2</span> A3C その2</h5>
 <ul>
 <li>オンライン化 &amp; 割引率(Aが発散しないように)の導入
 <ul>
@@ -1353,8 +1371,8 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 
 </ul>
 </section>
-<section id="slide-org17b137a">
-<h5 id="org17b137a"><span class="section-number-5">4.2.1.3</span> A3C その3</h5>
+<section id="slide-org7560ed7">
+<h5 id="org7560ed7"><span class="section-number-5">4.2.1.3</span> A3C その3</h5>
 <ul>
 <li>非同期化</li>
 <li>スレッドごとのパラメータ \(\theta'\) 、全体のパラメータ \(\theta\) として、並列に学習を実行</li>
@@ -1370,21 +1388,21 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 </section>
 </section>
 <section>
-<section id="slide-org3f48770">
-<h4 id="org3f48770"><span class="section-number-4">4.2.2</span> その他のトピック</h4>
+<section id="slide-org590553b">
+<h4 id="org590553b"><span class="section-number-4">4.2.2</span> その他のトピック</h4>
 <div class="outline-text-4" id="text-4-2-2">
 </div>
 </section>
-<section id="slide-org62899b2">
-<h5 id="org62899b2"><span class="section-number-5">4.2.2.1</span> 決定的方策勾配法</h5>
+<section id="slide-org0fd33c2">
+<h5 id="org0fd33c2"><span class="section-number-5">4.2.2.1</span> 決定的方策勾配法</h5>
 <ul>
 <li><a href="http://proceedings.mlr.press/v32/silver14.pdf">http://proceedings.mlr.press/v32/silver14.pdf</a></li>
 
 </ul>
 
 </section>
-<section id="slide-orga9b98d7">
-<h5 id="orga9b98d7"><span class="section-number-5">4.2.2.2</span> Trust Region Policy Optimization</h5>
+<section id="slide-org75d001f">
+<h5 id="org75d001f"><span class="section-number-5">4.2.2.2</span> Trust Region Policy Optimization</h5>
 <ul>
 <li><a href="https://arxiv.org/abs/1502.05477">https://arxiv.org/abs/1502.05477</a></li>
 
@@ -1392,23 +1410,23 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 </section>
 </section>
 <section>
-<section id="slide-org48fcef9">
-<h4 id="org48fcef9"><span class="section-number-4">4.2.3</span> オフポリシー型学習との併用</h4>
+<section id="slide-org27f56bb">
+<h4 id="org27f56bb"><span class="section-number-4">4.2.3</span> オフポリシー型学習との併用</h4>
 <p>
 後で追加します
 </p>
 </section>
 </section>
 <section>
-<section id="slide-orgc0e226d">
-<h3 id="orgc0e226d"><span class="section-number-3">4.3</span> 報酬を使う(？)方法</h3>
+<section id="slide-orge69b790">
+<h3 id="orge69b790"><span class="section-number-3">4.3</span> 報酬を使う(？)方法</h3>
 <div class="outline-text-3" id="text-4-3">
 </div>
 </section>
 </section>
 <section>
-<section id="slide-orgf4eda66">
-<h4 id="orgf4eda66"><span class="section-number-4">4.3.1</span> (補足)逆強化学習、見ならい学習</h4>
+<section id="slide-org868cc4a">
+<h4 id="org868cc4a"><span class="section-number-4">4.3.1</span> (補足)逆強化学習、見ならい学習</h4>
 <ul>
 <li>最適行動から報酬関数を推定(Ng(人の名前))</li>
 <li>エキスパートの行動軌跡から報酬関数を推定(Abbeel)</li>
@@ -1417,8 +1435,8 @@ Q_\pi (s, a) = V_\pi(s) + A_ \pi(s, a)
 </section>
 </section>
 <section>
-<section id="slide-org14e75af">
-<h4 id="org14e75af"><span class="section-number-4">4.3.2</span> Deep Q-learning from Demonstrations</h4>
+<section id="slide-org40755e5">
+<h4 id="org40755e5"><span class="section-number-4">4.3.2</span> Deep Q-learning from Demonstrations</h4>
 </section>
 </section>
 </div>
