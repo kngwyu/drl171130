@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Reinforcement Learning: An Introduction Chapter 7</title>
+<meta name="author" content="(金川裕司 (学際科学科三年))"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/home/mio_h/Binary/reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="/home/mio_h/Binary/reveal.js/css/theme/none.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '/home/mio_h/Binary/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<script type="text/javascript" src="/usr/share/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Reinforcement Learning: An Introduction Chapter 7</h1><h2 class="author">金川裕司 (学際科学科三年)</h2><p class="date">Created: 2017-12-04 月 01:24</p>
+</section>
+<section id="table-of-contents">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-org73092e2">1. n-step TD prediction</a></li>
+<li><a href="#/slide-org51b06e7">2. n-step SARSA</a></li>
+<li><a href="#/slide-org507980a">3. 重点サンプリングによる方策オフ型での学習 n-step版</a></li>
+<li><a href="#/slide-orgcb473f8">4. Per-reward Off-policy Methods</a></li>
+<li><a href="#/slide-orgb0bc1d7">5. 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</a></li>
+<li><a href="#/slide-org8311a18">6. まとめ</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section>
+<section id="slide-org73092e2">
+<h2 id="org73092e2"><span class="section-number-2">1</span> n-step TD prediction</h2>
+<ul>
+<li>\(n\) ステップ版TD誤差学習</li>
+
+</ul>
+<p>
+\[
+\scriptsize V_{t+ n}(s_t) \xleftarrow[update]{}  V_{t+n-1}(s_t) + \alpha_t
+\bigl(\sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n
+V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
+\]
+</p>
+<ul>
+<li>cf. 1ステップ版</li>
+
+</ul>
+<div>
+\begin{aligned}
+V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma V_\pi (s_{t + 1}) - V_\pi (s_t) \bigr) 
+\end{aligned}
+
+</div>
+<ul>
+<li>1ステップ版では即時報酬 \(R_{t+1}\) のサンプリング値で報酬の期待値を近似
+していたが、これを \(n\) ステップぶんの割引報酬和に変える</li>
+<li>収束については略</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org51b06e7">
+<h2 id="org51b06e7"><span class="section-number-2">2</span> n-step SARSA</h2>
+<ul>
+<li>全く同様にSARSAについてもnステップ版にできる</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org507980a">
+<h2 id="org507980a"><span class="section-number-2">3</span> 重点サンプリングによる方策オフ型での学習 n-step版</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+</section>
+<section id="slide-org6be2c7b">
+<h3 id="org6be2c7b"><span class="section-number-3">3.1</span> 整理 方策オン/オフ</h3>
+<ul>
+<li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
+ぶ
+<ul>
+<li>TD-LearningやSARSAは方策オン型でPolicy Iteration(&rarr; Chapter3)する
+ことで最適価値関数に収束させることができる</li>
+
+</ul></li>
+<li>逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ
+<ul>
+<li>目標方策 \(\pi\) (しばしば \(\epsilon \rm -greedy\) が用いられる)と学習に使う
+方策 \(b\) は別でよい</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgbba354f">
+<h4 id="orgbba354f"><span class="section-number-4">3.1.1</span> 方策オフ型の利点</h4>
+<ul>
+<li>柔軟性が高い</li>
+<li>サンプルが再利用できる(今回は全く関係ないが&#x2026;)
+<ul>
+<li>Policy Iterationしていくと、毎回違う方策で学習することになるので、
+以前サンプリングした値を再利用することができない</li>
+<li>DQNの体験再生のようにサンプル値のバイアスを軽減させるために使うこ
+ともできる</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-org4136826">
+<h4 id="org4136826"><span class="section-number-4">3.1.2</span> 方策オフ型の欠点</h4>
+<ul>
+<li>強いバイアスがかかる</li>
+<li>収束が遅い</li>
+
+</ul>
+
+</section>
+<section id="slide-org1b0835e">
+<h3 id="org1b0835e"><span class="section-number-3">3.2</span> 重点サンプリング</h3>
+<ul>
+<li>Chapter5(モンテカルロ法)で出てきた</li>
+
+</ul>
+
+</section>
+<section id="slide-orgc2861c3">
+<h4 id="orgc2861c3"><span class="section-number-4">3.2.1</span> 重点サンプリング  復習その1</h4>
+<ul>
+<li>実際に行動するための方策 \(b\) を固定した上で、目標方策 \(\pi\) で行動し
+た時と同様の更新を行いたい</li>
+<li>\(t..T\) ステップ目にとった行動・状態の組</li>
+
+</ul>
+<p>
+\[
+a_t, s_t, a_{t+1}, s_ {t+1}, ..., a_T, s_T
+\]
+が与えられた時、\((a_t, s_t) \rightarrow (a_T, S_T)\) の遷移確率を
+\[
+\rho  _{t:T-1} \doteq \frac{\prod _{k=t} ^{T-1} \pi(a_k |s_k) P(s _{k+1}|
+s_k, a_k)}{\prod _{k=t}^{T-1} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} ^{T-1} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+\]
+で用いて補正し、 \(\pi\) に基づいて行動した場合に得られる収益の近似値を得
+る
+</p>
+
+</section>
+<section id="slide-orgd8e4d82">
+<h4 id="orgd8e4d82"><span class="section-number-4">3.2.2</span> 重点サンプリング  復習その2</h4>
+<p>
+FirstVisit 型のモンテカルロ法では、
+\[
+\mathcal T(s) = 状態sを最初に訪れた時刻の集合 = t_1, t_2,...
+\]
+として価値関数 \(V\) を \(\rho\) により補正した収益の単純平均
+\[
+V(s) \doteq \frac{\sum _{t \in \mathcal T(s)} \it p  _{t:T-1} G_t }{|\mathcal T(s)|}
+\]
+や重みづけ平均
+\[
+V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \in \mathcal T(s)} \it p  _{t:T-1}}
+\]
+で近似する
+</p>
+
+</section>
+<section id="slide-orgb091eef">
+<h4 id="orgb091eef"><span class="section-number-4">3.2.3</span> 重点サンプリング  復習その3</h4>
+<ul>
+<li>学習は以下の手順で行う
+<ul>
+<li>目標方策 \(\pi\) 、適当な方策 \(b\) を用意</li>
+<li>\(b\) を固定、目標方策 \(\pi\) を以下のようにIterationし最適方策に収束させる
+<ul>
+<li>エピソードが終わった後さきほどの更新式により \(V_ {estimate}\) を更新</li>
+<li>\(\pi\) を \(V_ {estimate}\) に基づく \(\epsilon -\rm greedy\) 方策等として更
+新</li>
+
+</ul></li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-org2de68d3">
+<h4 id="org2de68d3"><span class="section-number-4">3.2.4</span> General Policy Iteration 復習</h4>
+<ul>
+<li>&rarr; Chapter4-3</li>
+<li>以下のように方策と価値関数を交互に更新し最適価値関数を求める手法</li>
+
+</ul>
+<p>
+\[
+\pi_i \xrightarrow[\pi _iで行動し価値関数を更新]{} Q_i \xrightarrow[Q_i に
+基づく貪欲方策]{} \pi _{i+1} ...
+\]
+</p>
+<ul>
+<li>exploitとのかねあいで単純な貪欲方策ではなく \(\epsilon - \rm greedy\) 等を使
+う</li>
+
+</ul>
+</section>
+<section id="slide-org51a40dc">
+<h4 id="org51a40dc"><span class="section-number-4">3.2.5</span> n-step版TD誤差学習への適用 その1</h4>
+<p>
+モンテカルロ法の場合と同様、固定された方策 \(b\) で行動し得られたn-step
+版TD誤差に、nステップぶんの遷移確率の補正値
+\[
+\scriptsize \rho  _{t:t+n-1} \doteq \frac{\prod _{k=t} ^{\min _{t+n-1, T -1}} \pi(a_k |s_k) P(s _{k+1}|
+s_k, a_k)}{\prod _{k=t} ^{\min _{t+n-1, T -1}} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} ^{\min _{t+n-1, T -1}} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+\]
+をかけて目標方策 \(\pi\) で行動した時のn-step版TD誤差の近似値を得る 
+</p>
+
+</section>
+<section id="slide-orgb42972b">
+<h4 id="orgb42972b"><span class="section-number-4">3.2.6</span> n-step版TD誤差学習への適用 その2</h4>
+<p>
+更新式は
+\[
+G _{t:t+n} = \sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n V_t(s_{t + n + 1})
+\]
+とおいて、
+\[
+V _{t+n} (s_t) \doteq V _{t+n -1}(s_t) + \alpha \rho  _{t:t+n-1} \bigl( G
+_{t:t+n} - V _{t+n-1}(s_t) \bigr)
+\]
+SARSAについても同様に
+\[
+\small Q _{t+n} (s_t, a_t) \doteq Q _{t+n -1}(s_t , a_t) + \alpha \rho  _{t:t+n-1} \bigl(\small G
+_{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
+\]
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgcb473f8">
+<h2 id="orgcb473f8"><span class="section-number-2">4</span> Per-reward Off-policy Methods</h2>
+<ul>
+<li>新しいやつにしかないのでスキップするかも</li>
+
+</ul>
+<p>
+\[
+\rho  _{t:t+n-1} \doteq  \prod _{k=t} ^{\min _{t+n-1, T -1}} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+\]
+は0になりうるので、直接TD誤差にかけると分散が大きくなり、収束が遅くな
+ る。
+これを避けるため更新を工夫する
+</p>
+</section>
+<section id="slide-orge70dcb4">
+<h4 id="orge70dcb4"><span class="section-number-4">4.0.1</span> Per-reward Off-policy Methods その1</h4>
+<p>
+割引報酬和 を再帰的に分解すると
+\[
+G _{t:h} = R _{t+1} + \gamma G _ {t+1: h}
+\]
+と書けるから、(TD誤差学習で)学習率 \(\alpha\) を導入したのと同じ要領で
+\[
+G _{t:h} \doteq \rho _t (R_{t+1} + \gamma G_ {t+1:h}) + (1 - \rho  _t) V
+_{h -1} (S_t)
+\]
+とする。
+</p>
+<ul>
+<li>※ \(V\) は \(G\) の期待値の推定値だから、式の解釈は「 \(\rho\) で補正がか
+からないぶんはそのまま」という感じ</li>
+
+</ul>
+
+</section>
+<section id="slide-orge6501f4">
+<h4 id="orge6501f4"><span class="section-number-4">4.0.2</span> Per-reward Off-policy Methods その2</h4>
+<ul>
+<li>このとき \(G _ {t:t+n}\) は \(V _{t - 1}(s), V_t (s), ..., V _{t+n-1}\) によ
+り計算できるのでn-step版TDLの更新式</li>
+
+</ul>
+<div>
+\begin{aligned}
+V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr) \\
+\end{aligned}
+
+</div>
+<p>
+とあわせてVの推定値を計算する
+</p>
+
+<ul>
+<li>Qについても同様</li>
+
+</ul>
+<p>
+\[
+\small G _{t:h} \doteq R_{t+1} + \gamma (\rho _{t+1}G_ {t+1:h} + (1 - \rho  _t) \sum _a
+\pi(a|s_t) Q _{t-1}(s_t, a)
+\]
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb0bc1d7">
+<h2 id="orgb0bc1d7"><span class="section-number-2">5</span> 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</h2>
+<ul>
+<li>ランダム行動により得られたサンプリング値から目標方策 \(\pi\) のもとでの \(G _{t:t+n}\) を近似する</li>
+<li>実際はランダムで \(a_t\) を選んだんだけど、\(\pi\) で行動してたんだけどたまたま \(a_t\) が出ちゃった、という体で式を立てる</li>
+
+</ul>
+
+</section>
+<section id="slide-org78b439f">
+<h3 id="org78b439f"><span class="section-number-3">5.1</span> Tree Backup Algorithm その1</h3>
+<ul>
+<li>n-step版SARSAのTD誤差を</li>
+
+</ul>
+<p>
+\[
+\delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
+\]
+として、 \(G\) を \(Q, \delta'\) , 目標方策 \(\pi\) を使って以下のように表す。
+</p>
+<div>
+\begin{aligned}
+\small G _{t:t+n} &\doteq \small R _{t+1} + \gamma \sum _{a\neq a _{t+1}} \pi(a| s _{t+1}) Q _t (s _{t+1}, a) + \gamma \pi (a _{t+1}|s _{t+1}) G _ {t+1:t+n} \\
+&\small = Q _{t-1}(s_t, a_t) + \sum _{k=t} ^{\min (t + n - 1, T -1)} \delta' _k \prod _{i=t+1} ^k \gamma \pi (a_i |s_i)
+\end{aligned}
+
+</div>
+</section>
+<section id="slide-org60eee13">
+<h3 id="org60eee13"><span class="section-number-3">5.2</span> Tree Backup Algorithm その2</h3>
+<p>
+\[
+\delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
+\]
+のうち \(Q _{t-1}(s_t, a_t)\) をランダム行動で得られた行動 \(a_t\) を使って計算して \(G _{t:t+n}\) を計算し、n-step版SARSAの更新式
+\[
+\small Q _{t+n} (s_t, a_t) \doteq Q _{t+n -1}(s_t , a_t) + \alpha  \bigl(\small G
+_{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
+\]
+で学習する
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org8311a18">
+<h2 id="org8311a18"><span class="section-number-2">6</span> まとめ</h2>
+<ul>
+<li>結局、精度と時間のトレードオフ
+<ul>
+<li>適格度トレーシングを使えば多少軽くなるが</li>
+
+</ul></li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/home/mio_h/Binary/reveal.js/lib/js/head.min.js"></script>
+<script src="/home/mio_h/Binary/reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: '/home/mio_h/Binary/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: '/home/mio_h/Binary/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '/home/mio_h/Binary/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: '/home/mio_h/Binary/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: '/home/mio_h/Binary/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

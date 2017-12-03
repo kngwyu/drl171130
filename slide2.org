@@ -1,0 +1,196 @@
+#+REVEAL_ROOT: https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/
+#+REVEAL_MATHJAX_URL: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+#+REVEAL_HLEVEL: 1
+#+REVEAL_TRANS: default
+#+REVEAL_THEME: none
+#+HTML_HEAD: <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
+#+TITLE: Reinforcement Learning: An Introduction Chapter 7
+#+AUTHOR: 金川裕司 (学際科学科三年)
+#+OPTIONS: toc:1
+#+OPTIONS: H:4
+* n-step TD prediction
+- $n$ ステップ版TD誤差学習
+$$
+\scriptsize V_{t+ n}(s_t) \xleftarrow[update]{}  V_{t+n-1}(s_t) + \alpha_t
+\bigl(\sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n
+V_t(s_{t + n + 1}) - V_{t+n-1}(s_t) \bigr)
+$$
+- cf. 1ステップ版
+\begin{aligned}
+V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma V_\pi (s_{t + 1}) - V_\pi (s_t) \bigr) 
+\end{aligned}
+- 1ステップ版では即時報酬 $R_{t+1}$ のサンプリング値で報酬の期待値を近似
+  していたが、これを $n$ ステップぶんの割引報酬和に変える
+- 収束については略
+
+* n-step SARSA
+- 全く同様にSARSAについてもnステップ版にできる
+
+* 重点サンプリングによる方策オフ型での学習 n-step版
+
+** 整理 方策オン/オフ
+- 目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
+  ぶ
+  - TD-LearningやSARSAは方策オン型でPolicy Iteration(\rightarrow Chapter3)する
+    ことで最適価値関数に収束させることができる
+- 逆に、適当な方策で学習しても収束するものを方策オフ型(off-policy)と呼ぶ
+  - 目標方策 $\pi$ (しばしば $\epsilon \rm -greedy$ が用いられる)と学習に使う
+    方策 $b$ は別でよい
+
+*** 方策オフ型の利点
+- 柔軟性が高い
+- サンプルが再利用できる(今回は全く関係ないが...)
+  - Policy Iterationしていくと、毎回違う方策で学習することになるので、
+    以前サンプリングした値を再利用することができない
+  - DQNの体験再生のようにサンプル値のバイアスを軽減させるために使うこ
+    ともできる
+
+*** 方策オフ型の欠点
+- 強いバイアスがかかる
+- 収束が遅い
+
+** 重点サンプリング
+- Chapter5(モンテカルロ法)で出てきた
+
+*** 重点サンプリング  復習その1
+- 実際に行動するための方策 $b$ を固定した上で、目標方策 $\pi$ で行動し
+  た時と同様の更新を行いたい
+- $t..T$ ステップ目にとった行動・状態の組
+$$
+a_t, s_t, a_{t+1}, s_ {t+1}, ..., a_T, s_T
+$$
+が与えられた時、$(a_t, s_t) \rightarrow (a_T, S_T)$ の遷移確率を
+$$
+\rho  _{t:T-1} \doteq \frac{\prod _{k=t} ^{T-1} \pi(a_k |s_k) P(s _{k+1}|
+s_k, a_k)}{\prod _{k=t}^{T-1} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} ^{T-1} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+$$
+で用いて補正し、 $\pi$ に基づいて行動した場合に得られる収益の近似値を得
+る
+
+*** 重点サンプリング  復習その2
+FirstVisit 型のモンテカルロ法では、
+$$
+\mathcal T(s) = 状態sを最初に訪れた時刻の集合 = t_1, t_2,...
+$$
+として価値関数 $V$ を $\rho$ により補正した収益の単純平均
+$$
+V(s) \doteq \frac{\sum _{t \in \mathcal T(s)} \it p  _{t:T-1} G_t }{|\mathcal T(s)|}
+$$
+や重みづけ平均
+$$
+V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \in \mathcal T(s)} \it p  _{t:T-1}}
+$$
+で近似する
+
+*** 重点サンプリング  復習その3
+- 学習は以下の手順で行う
+  - 目標方策 $\pi$ 、適当な方策 $b$ を用意
+  - $b$ を固定、目標方策 $\pi$ を以下のようにIterationし最適方策に収束させる
+    - エピソードが終わった後さきほどの更新式により $V_ {estimate}$ を更新
+    - $\pi$ を $V_ {estimate}$ に基づく $\epsilon -\rm greedy$ 方策等として更
+      新
+*** General Policy Iteration 復習
+- \rightarrow Chapter4-3
+- 以下のように方策と価値関数を交互に更新し最適価値関数を求める手法
+$$
+\pi_i \xrightarrow[\pi _iで行動し価値関数を更新]{} Q_i \xrightarrow[Q_i に
+基づく貪欲方策]{} \pi _{i+1} ...
+$$
+- exploitとのかねあいで単純な貪欲方策ではなく $\epsilon - \rm greedy$ 等を使
+  う
+*** n-step版TD誤差学習への適用 その1
+モンテカルロ法の場合と同様、固定された方策 $b$ で行動し得られたn-step
+版TD誤差に、nステップぶんの遷移確率の補正値
+$$
+\scriptsize \rho  _{t:t+n-1} \doteq \frac{\prod _{k=t} ^{\min _{t+n-1, T -1}} \pi(a_k |s_k) P(s _{k+1}|
+s_k, a_k)}{\prod _{k=t} ^{\min _{t+n-1, T -1}} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} ^{\min _{t+n-1, T -1}} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+$$
+をかけて目標方策 $\pi$ で行動した時のn-step版TD誤差の近似値を得る 
+
+*** n-step版TD誤差学習への適用 その2
+更新式は
+$$
+G _{t:t+n} = \sum_{k=1}^n \gamma^{k-1}R_{t+k} + \gamma ^n V_t(s_{t + n + 1})
+$$
+とおいて、
+$$
+V _{t+n} (s_t) \doteq V _{t+n -1}(s_t) + \alpha \rho  _{t:t+n-1} \bigl( G
+_{t:t+n} - V _{t+n-1}(s_t) \bigr)
+$$
+SARSAについても同様に
+$$
+\small Q _{t+n} (s_t, a_t) \doteq Q _{t+n -1}(s_t , a_t) + \alpha \rho  _{t:t+n-1} \bigl(\small G
+_{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
+$$
+
+* Per-reward Off-policy Methods
+- 新しいやつにしかないのでスキップするかも
+$$
+\rho  _{t:t+n-1} \doteq  \prod _{k=t} ^{\min _{t+n-1, T -1}} \frac{\pi(a_k |s_k)}{b (a_k|s_k)}
+$$
+は0になりうるので、直接TD誤差にかけると分散が大きくなり、収束が遅くな
+ る。
+これを避けるため更新を工夫する
+*** Per-reward Off-policy Methods その1
+割引報酬和 を再帰的に分解すると
+$$
+G _{t:h} = R _{t+1} + \gamma G _ {t+1: h}
+$$
+と書けるから、(TD誤差学習で)学習率 $\alpha$ を導入したのと同じ要領で
+$$
+G _{t:h} \doteq \rho _t (R_{t+1} + \gamma G_ {t+1:h}) + (1 - \rho  _t) V
+_{h -1} (S_t)
+$$
+とする。
+- ※ $V$ は $G$ の期待値の推定値だから、式の解釈は「 $\rho$ で補正がか
+  からないぶんはそのまま」という感じ
+
+*** Per-reward Off-policy Methods その2
+- このとき $G _ {t:t+n}$ は $V _{t - 1}(s), V_t (s), ..., V _{t+n-1}$ によ
+  り計算できるのでn-step版TDLの更新式
+\begin{aligned}
+V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr) \\
+\end{aligned}
+とあわせてVの推定値を計算する
+
+- Qについても同様
+$$
+\small G _{t:h} \doteq R_{t+1} + \gamma (\rho _{t+1}G_ {t+1:h} + (1 - \rho  _t) \sum _a
+\pi(a|s_t) Q _{t-1}(s_t, a)
+$$
+
+* 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm
+- ランダム行動により得られたサンプリング値から目標方策 $\pi$ のもとでの $G _{t:t+n}$ を近似する
+- 実際はランダムで $a_t$ を選んだんだけど、$\pi$ で行動してたんだけどたまたま $a_t$ が出ちゃった、という体で式を立てる
+
+** Tree Backup Algorithm その1
+- n-step版SARSAのTD誤差を
+$$
+\delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
+$$
+として、 $G$ を $Q, \delta'$ , 目標方策 $\pi$ を使って以下のように表す。
+\begin{aligned}
+\small G _{t:t+n} &\doteq \small R _{t+1} + \gamma \sum _{a\neq a _{t+1}} \pi(a| s _{t+1}) Q _t (s _{t+1}, a) + \gamma \pi (a _{t+1}|s _{t+1}) G _ {t+1:t+n} \\
+&\small = Q _{t-1}(s_t, a_t) + \sum _{k=t} ^{\min (t + n - 1, T -1)} \delta' _k \prod _{i=t+1} ^k \gamma \pi (a_i |s_i)
+\end{aligned}
+** Tree Backup Algorithm その2
+$$
+\delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
+$$
+のうち $Q _{t-1}(s_t, a_t)$ をランダム行動で得られた行動 $a_t$ を使って計算して $G _{t:t+n}$ を計算し、n-step版SARSAの更新式
+$$
+\small Q _{t+n} (s_t, a_t) \doteq Q _{t+n -1}(s_t , a_t) + \alpha  \bigl(\small G
+_{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
+$$
+で学習する
+
+* n-step Q(\sigma)
+- 重点サンプリングとTree Backup を併用する
+- $\sigma_t \in \{0,1\}$ を「tステップ目で重点サンプリングするかBackupする
+  か」を表す値として、真面目に式を書くと教科書に書いてあるみたいになる
+
+* まとめ
+- 結局、精度と時間のトレードオフ
+  - 適格度トレーシングを使えば多少軽くなるが...
+- 方策オフ型にするのも重要だが結局何のために重点サンプリングやTree
+  Backupを導入したのかよくわからん
