@@ -7,9 +7,9 @@
 <style type="text/css">
 .underline { text-decoration: underline; }
 </style>
-<link rel="stylesheet" href="/home/mio_h/Binary/reveal.js/css/reveal.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/reveal.css"/>
 
-<link rel="stylesheet" href="/home/mio_h/Binary/reveal.js/css/theme/none.css" id="theme"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/theme/none.css" id="theme"/>
 
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
@@ -18,36 +18,37 @@
         var link = document.createElement( 'link' );
         link.rel = 'stylesheet';
         link.type = 'text/css';
-        link.href = '/home/mio_h/Binary/reveal.js/css/print/pdf.css';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/css/print/pdf.css';
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
-<script type="text/javascript" src="/usr/share/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
 </head>
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">Reinforcement Learning: An Introduction Chapter 7</h1><h2 class="author">金川裕司 (学際科学科三年)</h2><p class="date">Created: 2017-12-04 月 01:24</p>
+<section id="sec-title-slide"><h1 class="title">Reinforcement Learning: An Introduction Chapter 7</h1><h2 class="author">金川裕司 (学際科学科三年)</h2><p class="date">Created: 2017-12-04 月 01:46</p>
 </section>
 <section id="table-of-contents">
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-org73092e2">1. n-step TD prediction</a></li>
-<li><a href="#/slide-org51b06e7">2. n-step SARSA</a></li>
-<li><a href="#/slide-org507980a">3. 重点サンプリングによる方策オフ型での学習 n-step版</a></li>
-<li><a href="#/slide-orgcb473f8">4. Per-reward Off-policy Methods</a></li>
-<li><a href="#/slide-orgb0bc1d7">5. 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</a></li>
-<li><a href="#/slide-org8311a18">6. まとめ</a></li>
+<li><a href="#/slide-orgd62b42f">1. n-step TD prediction</a></li>
+<li><a href="#/slide-orgb64fbdd">2. n-step SARSA</a></li>
+<li><a href="#/slide-org8cbf0bc">3. 重点サンプリングによる方策オフ型での学習 n-step版</a></li>
+<li><a href="#/slide-orgfc39ed7">4. Per-reward Off-policy Methods</a></li>
+<li><a href="#/slide-orgd3eae06">5. 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</a></li>
+<li><a href="#/slide-orgd0f1a09">6. n-step Q(&sigma;)</a></li>
+<li><a href="#/slide-org5dcae0c">7. まとめ</a></li>
 </ul>
 </div>
 </div>
 </section>
 <section>
-<section id="slide-org73092e2">
-<h2 id="org73092e2"><span class="section-number-2">1</span> n-step TD prediction</h2>
+<section id="slide-orgd62b42f">
+<h2 id="orgd62b42f"><span class="section-number-2">1</span> n-step TD prediction</h2>
 <ul>
 <li>\(n\) ステップ版TD誤差学習</li>
 
@@ -79,8 +80,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </section>
 </section>
 <section>
-<section id="slide-org51b06e7">
-<h2 id="org51b06e7"><span class="section-number-2">2</span> n-step SARSA</h2>
+<section id="slide-orgb64fbdd">
+<h2 id="orgb64fbdd"><span class="section-number-2">2</span> n-step SARSA</h2>
 <ul>
 <li>全く同様にSARSAについてもnステップ版にできる</li>
 
@@ -89,13 +90,13 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </section>
 </section>
 <section>
-<section id="slide-org507980a">
-<h2 id="org507980a"><span class="section-number-2">3</span> 重点サンプリングによる方策オフ型での学習 n-step版</h2>
+<section id="slide-org8cbf0bc">
+<h2 id="org8cbf0bc"><span class="section-number-2">3</span> 重点サンプリングによる方策オフ型での学習 n-step版</h2>
 <div class="outline-text-2" id="text-3">
 </div>
 </section>
-<section id="slide-org6be2c7b">
-<h3 id="org6be2c7b"><span class="section-number-3">3.1</span> 整理 方策オン/オフ</h3>
+<section id="slide-orgb21edc1">
+<h3 id="orgb21edc1"><span class="section-number-3">3.1</span> 整理 方策オン/オフ</h3>
 <ul>
 <li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
 ぶ
@@ -114,8 +115,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-orgbba354f">
-<h4 id="orgbba354f"><span class="section-number-4">3.1.1</span> 方策オフ型の利点</h4>
+<section id="slide-org6bb06d2">
+<h4 id="org6bb06d2"><span class="section-number-4">3.1.1</span> 方策オフ型の利点</h4>
 <ul>
 <li>柔軟性が高い</li>
 <li>サンプルが再利用できる(今回は全く関係ないが&#x2026;)
@@ -130,8 +131,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-org4136826">
-<h4 id="org4136826"><span class="section-number-4">3.1.2</span> 方策オフ型の欠点</h4>
+<section id="slide-orgbc26d12">
+<h4 id="orgbc26d12"><span class="section-number-4">3.1.2</span> 方策オフ型の欠点</h4>
 <ul>
 <li>強いバイアスがかかる</li>
 <li>収束が遅い</li>
@@ -139,16 +140,16 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-org1b0835e">
-<h3 id="org1b0835e"><span class="section-number-3">3.2</span> 重点サンプリング</h3>
+<section id="slide-orga24015a">
+<h3 id="orga24015a"><span class="section-number-3">3.2</span> 重点サンプリング</h3>
 <ul>
 <li>Chapter5(モンテカルロ法)で出てきた</li>
 
 </ul>
 
 </section>
-<section id="slide-orgc2861c3">
-<h4 id="orgc2861c3"><span class="section-number-4">3.2.1</span> 重点サンプリング  復習その1</h4>
+<section id="slide-orgf33410a">
+<h4 id="orgf33410a"><span class="section-number-4">3.2.1</span> 重点サンプリング  復習その1</h4>
 <ul>
 <li>実際に行動するための方策 \(b\) を固定した上で、目標方策 \(\pi\) で行動し
 た時と同様の更新を行いたい</li>
@@ -169,8 +170,8 @@ s_k, a_k)}{\prod _{k=t}^{T-1} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} 
 </p>
 
 </section>
-<section id="slide-orgd8e4d82">
-<h4 id="orgd8e4d82"><span class="section-number-4">3.2.2</span> 重点サンプリング  復習その2</h4>
+<section id="slide-org4b97ba9">
+<h4 id="org4b97ba9"><span class="section-number-4">3.2.2</span> 重点サンプリング  復習その2</h4>
 <p>
 FirstVisit 型のモンテカルロ法では、
 \[
@@ -188,8 +189,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 </p>
 
 </section>
-<section id="slide-orgb091eef">
-<h4 id="orgb091eef"><span class="section-number-4">3.2.3</span> 重点サンプリング  復習その3</h4>
+<section id="slide-org125ccb0">
+<h4 id="org125ccb0"><span class="section-number-4">3.2.3</span> 重点サンプリング  復習その3</h4>
 <ul>
 <li>学習は以下の手順で行う
 <ul>
@@ -206,8 +207,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 
 </ul>
 </section>
-<section id="slide-org2de68d3">
-<h4 id="org2de68d3"><span class="section-number-4">3.2.4</span> General Policy Iteration 復習</h4>
+<section id="slide-orgbf65379">
+<h4 id="orgbf65379"><span class="section-number-4">3.2.4</span> General Policy Iteration 復習</h4>
 <ul>
 <li>&rarr; Chapter4-3</li>
 <li>以下のように方策と価値関数を交互に更新し最適価値関数を求める手法</li>
@@ -225,8 +226,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 
 </ul>
 </section>
-<section id="slide-org51a40dc">
-<h4 id="org51a40dc"><span class="section-number-4">3.2.5</span> n-step版TD誤差学習への適用 その1</h4>
+<section id="slide-orgc8be7a9">
+<h4 id="orgc8be7a9"><span class="section-number-4">3.2.5</span> n-step版TD誤差学習への適用 その1</h4>
 <p>
 モンテカルロ法の場合と同様、固定された方策 \(b\) で行動し得られたn-step
 版TD誤差に、nステップぶんの遷移確率の補正値
@@ -238,8 +239,8 @@ s_k, a_k)}{\prod _{k=t} ^{\min _{t+n-1, T -1}} b (a_k|s_k) P(s _{k+1}| s_k, a_k)
 </p>
 
 </section>
-<section id="slide-orgb42972b">
-<h4 id="orgb42972b"><span class="section-number-4">3.2.6</span> n-step版TD誤差学習への適用 その2</h4>
+<section id="slide-orgaeb3664">
+<h4 id="orgaeb3664"><span class="section-number-4">3.2.6</span> n-step版TD誤差学習への適用 その2</h4>
 <p>
 更新式は
 \[
@@ -260,8 +261,8 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orgcb473f8">
-<h2 id="orgcb473f8"><span class="section-number-2">4</span> Per-reward Off-policy Methods</h2>
+<section id="slide-orgfc39ed7">
+<h2 id="orgfc39ed7"><span class="section-number-2">4</span> Per-reward Off-policy Methods</h2>
 <ul>
 <li>新しいやつにしかないのでスキップするかも</li>
 
@@ -275,8 +276,8 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 これを避けるため更新を工夫する
 </p>
 </section>
-<section id="slide-orge70dcb4">
-<h4 id="orge70dcb4"><span class="section-number-4">4.0.1</span> Per-reward Off-policy Methods その1</h4>
+<section id="slide-orgd789096">
+<h4 id="orgd789096"><span class="section-number-4">4.0.1</span> Per-reward Off-policy Methods その1</h4>
 <p>
 割引報酬和 を再帰的に分解すると
 \[
@@ -296,8 +297,8 @@ _{h -1} (S_t)
 </ul>
 
 </section>
-<section id="slide-orge6501f4">
-<h4 id="orge6501f4"><span class="section-number-4">4.0.2</span> Per-reward Off-policy Methods その2</h4>
+<section id="slide-org7b832a3">
+<h4 id="org7b832a3"><span class="section-number-4">4.0.2</span> Per-reward Off-policy Methods その2</h4>
 <ul>
 <li>このとき \(G _ {t:t+n}\) は \(V _{t - 1}(s), V_t (s), ..., V _{t+n-1}\) によ
 り計算できるのでn-step版TDLの更新式</li>
@@ -327,8 +328,8 @@ V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orgb0bc1d7">
-<h2 id="orgb0bc1d7"><span class="section-number-2">5</span> 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</h2>
+<section id="slide-orgd3eae06">
+<h2 id="orgd3eae06"><span class="section-number-2">5</span> 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</h2>
 <ul>
 <li>ランダム行動により得られたサンプリング値から目標方策 \(\pi\) のもとでの \(G _{t:t+n}\) を近似する</li>
 <li>実際はランダムで \(a_t\) を選んだんだけど、\(\pi\) で行動してたんだけどたまたま \(a_t\) が出ちゃった、という体で式を立てる</li>
@@ -336,8 +337,8 @@ V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr)
 </ul>
 
 </section>
-<section id="slide-org78b439f">
-<h3 id="org78b439f"><span class="section-number-3">5.1</span> Tree Backup Algorithm その1</h3>
+<section id="slide-org9a1fa58">
+<h3 id="org9a1fa58"><span class="section-number-3">5.1</span> Tree Backup Algorithm その1</h3>
 <ul>
 <li>n-step版SARSAのTD誤差を</li>
 
@@ -356,8 +357,8 @@ V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr)
 
 </div>
 </section>
-<section id="slide-org60eee13">
-<h3 id="org60eee13"><span class="section-number-3">5.2</span> Tree Backup Algorithm その2</h3>
+<section id="slide-org28b1904">
+<h3 id="org28b1904"><span class="section-number-3">5.2</span> Tree Backup Algorithm その2</h3>
 <p>
 \[
 \delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
@@ -373,22 +374,36 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-org8311a18">
-<h2 id="org8311a18"><span class="section-number-2">6</span> まとめ</h2>
+<section id="slide-orgd0f1a09">
+<h2 id="orgd0f1a09"><span class="section-number-2">6</span> n-step Q(&sigma;)</h2>
+<ul>
+<li>重点サンプリングとTree Backup を併用する</li>
+<li>\(\sigma_t \in \{0,1\}\) を「tステップ目で重点サンプリングするかBackupする
+か」を表す値として、真面目に式を書くと教科書に書いてあるみたいになる</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org5dcae0c">
+<h2 id="org5dcae0c"><span class="section-number-2">7</span> まとめ</h2>
 <ul>
 <li>結局、精度と時間のトレードオフ
 <ul>
-<li>適格度トレーシングを使えば多少軽くなるが</li>
+<li>適格度トレーシングを使えば多少軽くなるが&#x2026;</li>
 
 </ul></li>
+<li>方策オフ型にするのも重要だが結局何のために重点サンプリングやTree
+Backupを導入したのかよくわからん</li>
 
 </ul>
 </section>
 </section>
 </div>
 </div>
-<script src="/home/mio_h/Binary/reveal.js/lib/js/head.min.js"></script>
-<script src="/home/mio_h/Binary/reveal.js/js/reveal.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/js/reveal.js"></script>
 
 <script>
 // Full list of configuration options available here:
@@ -415,11 +430,11 @@ multiplex: {
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
- { src: '/home/mio_h/Binary/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
- { src: '/home/mio_h/Binary/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: '/home/mio_h/Binary/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: '/home/mio_h/Binary/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
- { src: '/home/mio_h/Binary/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
 });
 </script>
 </body>
