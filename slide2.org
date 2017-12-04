@@ -161,14 +161,13 @@ $$
 
 * 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm
 - ランダム行動により得られたサンプリング値から目標方策 $\pi$ のもとでの $G _{t:t+n}$ を近似する
-- 実際はランダムで $a_t$ を選んだんだけど、$\pi$ で行動してたんだけどたまたま $a_t$ が出ちゃった、という体で式を立てる
-
+- 実際はランダムに $a_t$ を選ぶが、$\pi$ で行動してたんだけどたまたま $a_t$ が出ちゃった、ということにしで式を立てる
 ** Tree Backup Algorithm その1
-- n-step版SARSAのTD誤差を
+- n-step版Expected SARSAのTD誤差
 $$
 \delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
 $$
-として、 $G$ を $Q, \delta'$ , 目標方策 $\pi$ を使って以下のように表す。
+を用いて、 $G$ を $Q, \delta'$ , 目標方策 $\pi$ を使って以下のように表す。
 \begin{aligned}
 \small G _{t:t+n} &\doteq \small R _{t+1} + \gamma \sum _{a\neq a _{t+1}} \pi(a| s _{t+1}) Q _t (s _{t+1}, a) + \gamma \pi (a _{t+1}|s _{t+1}) G _ {t+1:t+n} \\
 &\small = Q _{t-1}(s_t, a_t) + \sum _{k=t} ^{\min (t + n - 1, T -1)} \delta' _k \prod _{i=t+1} ^k \gamma \pi (a_i |s_i)
