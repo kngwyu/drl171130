@@ -28,27 +28,27 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">Reinforcement Learning: An Introduction Chapter 7</h1><h2 class="author">金川裕司 (学際科学科三年)</h2><p class="date">Created: 2017-12-04 月 23:14</p>
+<section id="sec-title-slide"><h1 class="title">Reinforcement Learning: An Introduction Chapter 7</h1><h2 class="author">金川裕司 (学際科学科三年)</h2><p class="date">Created: 2017-12-05 火 14:39</p>
 </section>
 <section id="table-of-contents">
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-org77b4fa2">1. n-step TD prediction</a></li>
-<li><a href="#/slide-org2d5a6e5">2. n-step SARSA</a></li>
-<li><a href="#/slide-org6c7d3dd">3. 重点サンプリングによる方策オフ型での学習 n-step版</a></li>
-<li><a href="#/slide-orgb4a93c5">4. Per-reward Off-policy Methods</a></li>
-<li><a href="#/slide-orgf0a5b49">5. 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</a></li>
-<li><a href="#/slide-orge59b7ef">6. n-step Q(&sigma;)</a></li>
-<li><a href="#/slide-org9b4139f">7. まとめ</a></li>
+<li><a href="#/slide-org99f5bd4">1. n-step TD prediction</a></li>
+<li><a href="#/slide-org2b30c72">2. n-step SARSA</a></li>
+<li><a href="#/slide-org338e1ee">3. 重点サンプリングによる方策オフ型での学習 n-step版</a></li>
+<li><a href="#/slide-org54d2162">4. Per-reward Off-policy Methods</a></li>
+<li><a href="#/slide-orge98e7e0">5. 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</a></li>
+<li><a href="#/slide-orgb83f4f3">6. n-step Q(&sigma;)</a></li>
+<li><a href="#/slide-orgbab9e06">7. まとめ</a></li>
 </ul>
 </div>
 </div>
 </section>
 <section>
-<section id="slide-org77b4fa2">
-<h2 id="org77b4fa2"><span class="section-number-2">1</span> n-step TD prediction</h2>
+<section id="slide-org99f5bd4">
+<h2 id="org99f5bd4"><span class="section-number-2">1</span> n-step TD prediction</h2>
 <ul>
 <li>\(n\) ステップ版TD誤差学習</li>
 
@@ -80,8 +80,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </section>
 </section>
 <section>
-<section id="slide-org2d5a6e5">
-<h2 id="org2d5a6e5"><span class="section-number-2">2</span> n-step SARSA</h2>
+<section id="slide-org2b30c72">
+<h2 id="org2b30c72"><span class="section-number-2">2</span> n-step SARSA</h2>
 <ul>
 <li>全く同様にSARSAについてもnステップ版にできる</li>
 
@@ -90,13 +90,13 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </section>
 </section>
 <section>
-<section id="slide-org6c7d3dd">
-<h2 id="org6c7d3dd"><span class="section-number-2">3</span> 重点サンプリングによる方策オフ型での学習 n-step版</h2>
+<section id="slide-org338e1ee">
+<h2 id="org338e1ee"><span class="section-number-2">3</span> 重点サンプリングによる方策オフ型での学習 n-step版</h2>
 <div class="outline-text-2" id="text-3">
 </div>
 </section>
-<section id="slide-orga654227">
-<h3 id="orga654227"><span class="section-number-3">3.1</span> 整理 方策オン/オフ</h3>
+<section id="slide-orga0a7010">
+<h3 id="orga0a7010"><span class="section-number-3">3.1</span> 整理 方策オン/オフ</h3>
 <ul>
 <li>目標方策と(ほぼ)同じものを学習に使う方法を方策オン型(on-policy)と呼
 ぶ
@@ -115,8 +115,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-orgd19c4aa">
-<h4 id="orgd19c4aa"><span class="section-number-4">3.1.1</span> 方策オフ型の利点</h4>
+<section id="slide-org2a2b2fc">
+<h4 id="org2a2b2fc"><span class="section-number-4">3.1.1</span> 方策オフ型の利点</h4>
 <ul>
 <li>柔軟性が高い</li>
 <li>サンプルが再利用できる(今回は全く関係ないが&#x2026;)
@@ -131,8 +131,8 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-orge0ecb1a">
-<h4 id="orge0ecb1a"><span class="section-number-4">3.1.2</span> 方策オフ型の欠点</h4>
+<section id="slide-orgd826607">
+<h4 id="orgd826607"><span class="section-number-4">3.1.2</span> 方策オフ型の欠点</h4>
 <ul>
 <li>強いバイアスがかかる</li>
 <li>収束が遅い</li>
@@ -140,16 +140,16 @@ V_\pi (s_t) \xleftarrow[update]{} V_\pi (s_t) + \alpha_t \bigl(R_{t+1} + \gamma 
 </ul>
 
 </section>
-<section id="slide-org2b038f5">
-<h3 id="org2b038f5"><span class="section-number-3">3.2</span> 重点サンプリング</h3>
+<section id="slide-org166c569">
+<h3 id="org166c569"><span class="section-number-3">3.2</span> 重点サンプリング</h3>
 <ul>
 <li>Chapter5(モンテカルロ法)で出てきた</li>
 
 </ul>
 
 </section>
-<section id="slide-org24cc2b9">
-<h4 id="org24cc2b9"><span class="section-number-4">3.2.1</span> 重点サンプリング  復習その1</h4>
+<section id="slide-orga0ec247">
+<h4 id="orga0ec247"><span class="section-number-4">3.2.1</span> 重点サンプリング  復習その1</h4>
 <ul>
 <li>実際に行動するための方策 \(b\) を固定した上で、目標方策 \(\pi\) で行動し
 た時と同様の更新を行いたい</li>
@@ -170,8 +170,8 @@ s_k, a_k)}{\prod _{k=t}^{T-1} b (a_k|s_k) P(s _{k+1}| s_k, a_k)} = \prod _{k=t} 
 </p>
 
 </section>
-<section id="slide-orgdab7e04">
-<h4 id="orgdab7e04"><span class="section-number-4">3.2.2</span> 重点サンプリング  復習その2</h4>
+<section id="slide-orge2b68e9">
+<h4 id="orge2b68e9"><span class="section-number-4">3.2.2</span> 重点サンプリング  復習その2</h4>
 <p>
 FirstVisit 型のモンテカルロ法では、
 \[
@@ -189,8 +189,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 </p>
 
 </section>
-<section id="slide-orgc862ebc">
-<h4 id="orgc862ebc"><span class="section-number-4">3.2.3</span> 重点サンプリング  復習その3</h4>
+<section id="slide-org7a8cea6">
+<h4 id="org7a8cea6"><span class="section-number-4">3.2.3</span> 重点サンプリング  復習その3</h4>
 <ul>
 <li>学習は以下の手順で行う
 <ul>
@@ -207,8 +207,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 
 </ul>
 </section>
-<section id="slide-org03bb63e">
-<h4 id="org03bb63e"><span class="section-number-4">3.2.4</span> General Policy Iteration 復習</h4>
+<section id="slide-org0667df3">
+<h4 id="org0667df3"><span class="section-number-4">3.2.4</span> General Policy Iteration 復習</h4>
 <ul>
 <li>&rarr; Chapter4-3</li>
 <li>以下のように方策と価値関数を交互に更新し最適価値関数を求める手法</li>
@@ -226,8 +226,8 @@ V(s) \doteq \frac{\sum _{\mathcal t \in T(s)} \it p  _{t:T-1} G_t } {\sum _{t \i
 
 </ul>
 </section>
-<section id="slide-org7d43d56">
-<h4 id="org7d43d56"><span class="section-number-4">3.2.5</span> n-step版TD誤差学習への適用 その1</h4>
+<section id="slide-org7170fee">
+<h4 id="org7170fee"><span class="section-number-4">3.2.5</span> n-step版TD誤差学習への適用 その1</h4>
 <p>
 モンテカルロ法の場合と同様、固定された方策 \(b\) で行動し得られたn-step
 版TD誤差に、nステップぶんの遷移確率の補正値
@@ -239,8 +239,8 @@ s_k, a_k)}{\prod _{k=t} ^{\min _{t+n-1, T -1}} b (a_k|s_k) P(s _{k+1}| s_k, a_k)
 </p>
 
 </section>
-<section id="slide-org8997f29">
-<h4 id="org8997f29"><span class="section-number-4">3.2.6</span> n-step版TD誤差学習への適用 その2</h4>
+<section id="slide-org1298504">
+<h4 id="org1298504"><span class="section-number-4">3.2.6</span> n-step版TD誤差学習への適用 その2</h4>
 <p>
 更新式は
 \[
@@ -261,8 +261,8 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orgb4a93c5">
-<h2 id="orgb4a93c5"><span class="section-number-2">4</span> Per-reward Off-policy Methods</h2>
+<section id="slide-org54d2162">
+<h2 id="org54d2162"><span class="section-number-2">4</span> Per-reward Off-policy Methods</h2>
 <ul>
 <li>新しいやつにしかないのでスキップするかも</li>
 
@@ -276,8 +276,8 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 これを避けるため更新を工夫する
 </p>
 </section>
-<section id="slide-orgc816a69">
-<h4 id="orgc816a69"><span class="section-number-4">4.0.1</span> Per-reward Off-policy Methods その1</h4>
+<section id="slide-org9746f4d">
+<h4 id="org9746f4d"><span class="section-number-4">4.0.1</span> Per-reward Off-policy Methods その1</h4>
 <p>
 割引報酬和 を再帰的に分解すると
 \[
@@ -297,8 +297,8 @@ _{h -1} (S_t)
 </ul>
 
 </section>
-<section id="slide-org39c0ecc">
-<h4 id="org39c0ecc"><span class="section-number-4">4.0.2</span> Per-reward Off-policy Methods その2</h4>
+<section id="slide-org453755d">
+<h4 id="org453755d"><span class="section-number-4">4.0.2</span> Per-reward Off-policy Methods その2</h4>
 <ul>
 <li>このとき \(G _ {t:t+n}\) は \(V _{t - 1}(s), V_t (s), ..., V _{t+n-1}\) によ
 り計算できるのでn-step版TDLの更新式</li>
@@ -328,16 +328,16 @@ V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orgf0a5b49">
-<h2 id="orgf0a5b49"><span class="section-number-2">5</span> 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</h2>
+<section id="slide-orge98e7e0">
+<h2 id="orge98e7e0"><span class="section-number-2">5</span> 重点サンプリングを使わない方策オフ学習  Tree Backup Algorithm</h2>
 <ul>
 <li>ランダム行動により得られたサンプリング値から目標方策 \(\pi\) のもとでの \(G _{t:t+n}\) を近似する</li>
-<li>実際はランダムに \(a_t\) を選ぶが、\(\pi\) で行動してたんだけどたまたま \(a_t\) が出ちゃった、ということにしで式を立てる</li>
+<li>実際はランダムに \(a_t\) を選ぶが、\(\pi\) で行動してたんだけどたまたま \(a_t\) が出ちゃった、ということにして式を立てる</li>
 
 </ul>
 </section>
-<section id="slide-orgc2bd121">
-<h3 id="orgc2bd121"><span class="section-number-3">5.1</span> Tree Backup Algorithm その1</h3>
+<section id="slide-orgbdf1e9e">
+<h3 id="orgbdf1e9e"><span class="section-number-3">5.1</span> Tree Backup Algorithm その1</h3>
 <ul>
 <li>n-step版Expected SARSAのTD誤差</li>
 
@@ -356,8 +356,8 @@ V _{t+n} (s_t) &= V _{t+n-1}(s_t) + \alpha \bigl( G _{t:t+n} - V _{t+n-1} \bigr)
 
 </div>
 </section>
-<section id="slide-orgc5f3c24">
-<h3 id="orgc5f3c24"><span class="section-number-3">5.2</span> Tree Backup Algorithm その2</h3>
+<section id="slide-orge475b1d">
+<h3 id="orge475b1d"><span class="section-number-3">5.2</span> Tree Backup Algorithm その2</h3>
 <p>
 \[
 \delta ' _t \doteq R _{t+1} + \gamma \sum _a \pi (a|s _{t+1}) Q _t(s _{t+1}, a) - Q _{t-1}(s_t, a_t)
@@ -373,8 +373,8 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-orge59b7ef">
-<h2 id="orge59b7ef"><span class="section-number-2">6</span> n-step Q(&sigma;)</h2>
+<section id="slide-orgb83f4f3">
+<h2 id="orgb83f4f3"><span class="section-number-2">6</span> n-step Q(&sigma;)</h2>
 <ul>
 <li>重点サンプリングとTree Backup を併用する</li>
 <li>\(\sigma_t \in \{0,1\}\) を「tステップ目で重点サンプリングするかBackupする
@@ -385,16 +385,16 @@ _{t:t+n} - Q _{t+n-1}(s_t, a_t) \bigr)
 </section>
 </section>
 <section>
-<section id="slide-org9b4139f">
-<h2 id="org9b4139f"><span class="section-number-2">7</span> まとめ</h2>
+<section id="slide-orgbab9e06">
+<h2 id="orgbab9e06"><span class="section-number-2">7</span> まとめ</h2>
 <ul>
 <li>結局、精度と時間のトレードオフ
 <ul>
 <li>適格度トレーシングを使えば多少軽くなるが&#x2026;</li>
 
 </ul></li>
-<li>方策オフ型にするのも重要だが結局何のために重点サンプリングやTree
-Backupを導入したのかよくわからん</li>
+<li>方策オフ型にするのも重要だが重点サンプリングやTree
+Backupがどのくらい使えるのかというとちょっとよくわからない</li>
 
 </ul>
 </section>
