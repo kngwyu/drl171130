@@ -5,6 +5,7 @@
 #+REVEAL_THEME: none
 #+HTML_HEAD: <link rel="stylesheet" href="./drl-171116-theme.css" id="theme"/>
 #+TITLE: DEEP REIFORCEMENT LEARNING: AN OVERVIEW(Yuxi Li)
+#+AUTHOR: 金川裕司(学際科学科3年)
 #+OPTIONS: toc:2
 #+OPTIONS: H:4
 * 概要
@@ -13,9 +14,10 @@
   - 
      [[http://incompleteideas.net/sutton/book/the-book-2nd.html][Sutton&Barto
      の有名な教科書(改訂版のドラフト)]]
+    - リンク切れかも
   - [[http://rll.berkeley.edu/deeprlcourse/][UC Barkleyの講義資料]]
   - [[http://www.morikita.co.jp/books/book/3034][これからの強化学習]],
-    [[http://bookclub.kodansha.co.jp/product?isbn=9784061538283][これならわかる深層学習入門]]
+    [[http://bookclub.kodansha.co.jp/product?isbn=9784061538283][これならわかる深層学習入門]], [[http://www.kyoritsu-pub.co.jp/bookdetail/9784320124226][速習 強化学習]]
 - 重要なこと
   - 価値関数を使用する方法(DQNとか)
   - 方策勾配を使用する方法(A3Cとか)
@@ -28,7 +30,6 @@
 
 * 背景
 機械学習、深層学習、強化学習
-
 ** 機械学習
 *** 教師あり学習・教師なし学習
 データから関数を学習する([[./drl1.pdf][図]])
@@ -130,7 +131,8 @@ $$
 
 **** ベルマン方程式の解法 その1
 - ベルマン方程式やベルマン最適方程式は解けるの？
-  - 特に、最適のほうはmaxをとっているところが自分も含んでいるから、難しそう
+  - 特に、最適のほうはmaxをとっているところが自分も含んでいる
+    (\rightarrow 非線形な演算になっている) から、難しそう
   - (補足)このような方程式を自己無撞着方程式と呼ぶ
 以下の更新(そのまま代入するだけ)を収束するまで反復することで、ベルマン
 方程式 $V_\pi(s)$ が解ける。
@@ -139,8 +141,32 @@ V _\pi(s) \xleftarrow[update]{} \sum _{a \in \mathcal A(s)} \pi (a|s) \sum _{s' 
 \end{aligned}
 **** ベルマン方程式の解法 その2
 - $Q, V _* , Q _*$ についても同様に解ける
-- 更新操作を作用素 $B^\pi$ でおく( $V' \leftarrow B^\pi V$ )と $B^\pi$ が $V$ の上
-  限ノルムに対する縮小写像になることから収束が示せる(らしい)
+- 更新操作を $V' \leftarrow B^\pi V$ )で表すとベルマン作用素 $B^\pi$
+  はアフィン作用素となる
+- $B^\pi$ が $V$ の最大値ノルムに対する縮小写像になることから、等比級
+  数的に収束することが示せる(「バナッハの不動点定理」で検索してみよう)
+
+**** (補足) マルコフ連鎖 その1
+- 離散時間確率過程 $S_1, S_2, ..., S_i, ...$ で、
+$$
+P (S_ {n+1} = s' | S_n = s) = P (S_ n = s' | S_ {n+1} = s) 
+$$
+であるもの(次の状態への遷移確率が、現在の状態のみに依存する)
+- cf. 過去の状態すべてに依存する\rightarrow マルチンゲール
+**** (補足) マルコフ連鎖 その2
+- マルコフ連鎖が持っていると嬉しい性質
+  - 規約
+    - 任意の $s, s'$ について $s \xrightarrow[]{*} s'$  という遷移が可
+      能
+    - 規約かつ非周期的なら定常状態を持つ
+  - 再帰性
+    - 任意の $s$ に ついて $s \xrightarrow[]{*} s$ という遷移が可能
+    - 有限時間で可能なら正再帰的
+  - エルゴード性
+    - 規約 + 非周期的 + 正再帰的
+    - エルゴード的だと大数の法則が使える
+**** (補足) マルコフ連鎖 その3
+- MDP 
 
 *** 価値反復アルゴリズム
 - マルコフ性を仮定した上で、遷移確率$P(s_{t+1}|s_t, a_t)$ および報酬関
@@ -187,6 +213,7 @@ V_\pi (s_t) \xleftarrow[update]{} & (1- \alpha_t)V_\pi (s_t) + \alpha_t \bigl(R_
 - $R_t + \gamma V(s_{t + 1}) - V(s_t)$ をTD誤差(TD error)と呼ぶ
 - $\alpha_t$ を適切に減衰させればこれは真の値に収束する
 - オンラインで学習できる
+**** (補足) TD誤差学習の収束
 
 **** SARSA
 - TD誤差学習と同じことを $Q(s, a)$ についてやる 
@@ -564,7 +591,7 @@ $$
 - Atari 2600 の ビデオゲームをエージェントに学習させた
 - fitted Q(前述した)で Q(s, a)を関数近似し、回帰関数にニューラルネットを使う
 **** DQNの全体像
-[[~/Dropbox/nature14236-f1.jpeg][Nature版の図]]
+[[./nature14236-f1.jpeg][Nature版の図]
 - 入力は4フレーム飛ばしで画像にして前処理してCNNに投げる
 - 目的関数は fitted-Qを使って固定する(前述した通り)
   - fitted-Qは他の手法と違って目的関数をある程度固定できるので、収束が
@@ -574,6 +601,20 @@ $$
   -  $Past(s _{t+1)) = (s_t, r_t)$ を記録し、記録した中からランダムに選ん
     で学習
   - サンプルの利用効率も上がる
+
+**** 学習手順 その1
+- fitted Qのパラメタ更新式は
+$$
+\theta _{k+1} = \rm{ arg} \min _\theta \mathbb E _\mu [(\hat Q(s_t,
+a_t | \theta) - w(s_t, a_t))^2] 
+$$
+だった( $w$ との誤差最小化を目的として勾配降下) 
+- ただし、wは $\hat Q$ 
+$$
+w(s_t, a_t) = \mathbb E _P [ R_{t+1} + \gamma \max _{a_{t+1}} \hat Q
+(s_{t+1}, a_{t+1} | \theta_k) | s_t, a_t]
+$$
+
 
 *** Double Q Learning
 - これもDeepMind(https://arxiv.org/abs/1509.06461)
